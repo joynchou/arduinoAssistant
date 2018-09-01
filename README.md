@@ -19,6 +19,9 @@
  #### 实现阶段
  此软件现在还在开发阶段，并且现在只开发了硬件查询模块
  
- 
+ ##### 效果图（真机截图）
+  ![image](https://github.com/joynchou/arduinoAssistent/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/%E6%A0%BC%E5%BC%8F%E5%B7%A5%E5%8E%82Screenshot_20180901-102307.jpg) ![image](https://github.com/joynchou/arduinoAssistent/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/%E6%A0%BC%E5%BC%8F%E5%B7%A5%E5%8E%82Screenshot_20180901-102316.jpg)
+  ![image](https://github.com/joynchou/arduinoAssistent/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/%E6%A0%BC%E5%BC%8F%E5%B7%A5%E5%8E%82Screenshot_20180901-102326.jpg)
  #### 合作
- 欢迎各位大佬们前来合作！！
+ 欢迎各位大佬们前来骚扰！！
+ 2922462750@qq.com
