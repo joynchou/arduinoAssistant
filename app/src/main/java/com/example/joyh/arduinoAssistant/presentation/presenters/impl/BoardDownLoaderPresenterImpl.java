@@ -3,10 +3,8 @@ package com.example.joyh.arduinoAssistant.presentation.presenters.impl;
 import android.util.Log;
 
 import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
-import com.example.joyh.arduinoAssistant.data.impl.MessageRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
-import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoShowDownloadableBoardsInteractor;

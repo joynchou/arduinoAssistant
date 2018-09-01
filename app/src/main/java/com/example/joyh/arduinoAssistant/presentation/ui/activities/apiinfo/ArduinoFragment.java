@@ -129,7 +129,7 @@ public class ArduinoFragment extends Fragment  {
             if (starRecord[position] == true) {
                 holder.starButton.setImageResource(R.drawable.ic_star);
             }
-            Bitmap bm = ((BitmapDrawable) ((ImageView) holder.backgroundImage).getDrawable()).getBitmap();
+            Bitmap bm = ((BitmapDrawable) holder.backgroundImage.getDrawable()).getBitmap();
             Palette.generateAsync(bm, new Palette.PaletteAsyncListener() {
                 @Override
                 public void onGenerated(@NonNull Palette palette) {

@@ -50,10 +50,10 @@ public class APIInfoActivity extends SwipeBackActivity implements APIInfoPresent
         mainPresenter = new APIInfoPresenterImpl(executor, mainThread, this);
         final Toolbar toolbar = findViewById(R.id.toolbar);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        progressBar = findViewById(R.id.progressBar);
+        Spinner spinner = findViewById(R.id.spinner);
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.button_search);
+        FloatingActionButton floatingActionButton = findViewById(R.id.button_search);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,11 +68,11 @@ public class APIInfoActivity extends SwipeBackActivity implements APIInfoPresent
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.CollapsingToolbarLayout);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        ViewPager viewPager = findViewById(R.id.viewPager);
         if (viewPager != null) {
             setupViewPager(viewPager);
         }
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
 

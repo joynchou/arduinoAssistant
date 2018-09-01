@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.aitangba.swipeback.ActivityLifecycleHelper;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
 
 /**
  * Created by joyn on 2018/8/28 0028.

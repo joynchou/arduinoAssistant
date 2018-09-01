@@ -32,7 +32,7 @@ public class SearchInteractorImpl extends AbstractInteractor implements SearchIn
     }
 
 
-    public void onNoResult() {
+    private void onNoResult() {
         //
         mMainThread.post(new Runnable() {
             @Override
@@ -67,7 +67,7 @@ public class SearchInteractorImpl extends AbstractInteractor implements SearchIn
         }
 
     }
-    public void findResultInDB(String data) {
+    private void findResultInDB(String data) {
         Log.i("model","model开始执行查询算法");
         try {
             Thread.sleep(2000);

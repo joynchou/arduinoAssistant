@@ -36,7 +36,6 @@ import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 import com.githang.statusbar.StatusBarCompat;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +61,7 @@ public class BoardDownloader extends SwipeBackActivity implements BoardDownloade
     private Map<Integer, String> taskMap;
     private DownloaderRecyclerViewAdapter adapter;
     private BoardRepositoryImpl boardRepository;
-    int sysVersion = Integer.parseInt(Build.VERSION.SDK);
+    private int sysVersion = Integer.parseInt(Build.VERSION.SDK);
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +69,7 @@ public class BoardDownloader extends SwipeBackActivity implements BoardDownloade
         setContentView(R.layout.activity_board_downloader);
 
         initToorbor();
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerView);
 
         recyclerView.setNestedScrollingEnabled(false);

@@ -66,7 +66,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
         initToorbor();
         intent=new Intent(HardWareInfoActivity.this, BoardDownloader.class);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
         info=findViewById(R.id.info_text);
 
 
@@ -74,7 +74,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
         StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary), false);
 
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        ViewPager viewPager = findViewById(R.id.viewPager);
         if (viewPager != null) {
             setupViewPager(viewPager);
         }
@@ -82,7 +82,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
             Log.w("viwepager", "onCreate: "+"viewpager is null" );
             showInfo("onCreate: "+"viewpager is null");
         }
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         mainPresenter.resume();
     }
@@ -134,7 +134,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
             case R.id.menu_downloader:
                 Intent intent=new Intent(HardWareInfoActivity.this, BoardDownloader.class);
                 startActivity(intent);
-                ;break;
+                break;
 
         }
         return super.onOptionsItemSelected(item);

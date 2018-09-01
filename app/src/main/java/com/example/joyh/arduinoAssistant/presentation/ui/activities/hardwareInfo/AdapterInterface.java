@@ -9,5 +9,5 @@ interface AdapterInterface {
         void onDownloadBoard(String boardName, int position,int downloadState);
 
     }
-    public BoardDownloaderInterface.Callback getCallback();
+    BoardDownloaderInterface.Callback getCallback();
 }

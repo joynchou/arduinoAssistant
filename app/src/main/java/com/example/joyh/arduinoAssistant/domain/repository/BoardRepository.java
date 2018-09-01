@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface BoardRepository {
 
-    public static final int ENTRY_LEVEL = 0;
-    public static final int ENHANCED_FEATURES = 1;
-    public static final int RETIRED = 2;
+    int ENTRY_LEVEL = 0;
+    int ENHANCED_FEATURES = 1;
+    int RETIRED = 2;
     interface Callback{
         void onError(String error);
     }

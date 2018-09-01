@@ -75,7 +75,7 @@ public class DownloadBoardResourceInteractorImpl extends AbstractInteractor impl
 
     @Override
     public void downloadBoardByName(String name, int listPosition, int downloadState) {
-        boardname = new String();
+        boardname = "";
         this.position = listPosition;
         this.boardname=name;
         this.downloadState = downloadState;

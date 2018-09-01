@@ -51,7 +51,7 @@ import android.graphics.drawable.Drawable;
  * @author Michael Yang（www.yangfuhai.com） update at 2013.08.07
  */
 public class ACache {
-	public static final int TIME_HOUR = 60 * 60;
+	private static final int TIME_HOUR = 60 * 60;
 	public static final int TIME_DAY = TIME_HOUR * 24;
 	private static final int MAX_SIZE = 1000 * 1000 * 50; // 50 mb
 	private static final int MAX_COUNT = Integer.MAX_VALUE; // 不限制存放数据的数量
@@ -62,7 +62,7 @@ public class ACache {
 		return get(ctx, "ACache");
 	}
 
-	public static ACache get(Context ctx, String cacheName) {
+	private static ACache get(Context ctx, String cacheName) {
 		File f = new File(ctx.getCacheDir(), cacheName);
 		return get(f, MAX_SIZE, MAX_COUNT);
 	}
@@ -76,7 +76,7 @@ public class ACache {
 		return get(f, max_zise, max_count);
 	}
 
-	public static ACache get(File cacheDir, long max_zise, int max_count) {
+	private static ACache get(File cacheDir, long max_zise, int max_count) {
 		ACache manager = mInstanceMap.get(cacheDir.getAbsoluteFile() + myPid());
 		if (manager == null) {
 			manager = new ACache(cacheDir, max_zise, max_count);
@@ -139,7 +139,7 @@ public class ACache {
 	 * @param saveTime
 	 *            保存的时间，单位：秒
 	 */
-	public void put(String key, String value, int saveTime) {
+    private void put(String key, String value, int saveTime) {
 		put(key, Utils.newStringWithDateInfo(saveTime, value));
 	}
 
@@ -287,7 +287,7 @@ public class ACache {
 	 * @param value
 	 *            保存的数据
 	 */
-	public void put(String key, byte[] value) {
+    private void put(String key, byte[] value) {
 		File file = mCache.newFile(key);
 		FileOutputStream out = null;
 		try {
@@ -318,7 +318,7 @@ public class ACache {
 	 * @param saveTime
 	 *            保存的时间，单位：秒
 	 */
-	public void put(String key, byte[] value, int saveTime) {
+    private void put(String key, byte[] value, int saveTime) {
 		put(key, Utils.newByteArrayWithDateInfo(saveTime, value));
 	}
 
@@ -328,7 +328,7 @@ public class ACache {
 	 * @param key
 	 * @return byte 数据
 	 */
-	public byte[] getAsBinary(String key) {
+    private byte[] getAsBinary(String key) {
 		RandomAccessFile RAFile = null;
 		boolean removeFile = false;
 		try {
@@ -385,7 +385,7 @@ public class ACache {
 	 * @param saveTime
 	 *            保存的时间，单位：秒
 	 */
-	public void put(String key, Serializable value, int saveTime) {
+    private void put(String key, Serializable value, int saveTime) {
 		ByteArrayOutputStream baos = null;
 		ObjectOutputStream oos = null;
 		try {
@@ -457,7 +457,7 @@ public class ACache {
 	 * @param value
 	 *            保存的bitmap数据
 	 */
-	public void put(String key, Bitmap value) {
+    private void put(String key, Bitmap value) {
 		put(key, Utils.Bitmap2Bytes(value));
 	}
 
@@ -471,7 +471,7 @@ public class ACache {
 	 * @param saveTime
 	 *            保存的时间，单位：秒
 	 */
-	public void put(String key, Bitmap value, int saveTime) {
+    private void put(String key, Bitmap value, int saveTime) {
 		put(key, Utils.Bitmap2Bytes(value), saveTime);
 	}
 
@@ -549,7 +549,7 @@ public class ACache {
 	 * @param key
 	 * @return 是否移除成功
 	 */
-	public boolean remove(String key) {
+    private boolean remove(String key) {
 		return mCache.remove(key);
 	}
 
@@ -572,7 +572,7 @@ public class ACache {
 		private final int countLimit;
 		private final Map<File, Long> lastUsageDates = Collections
 				.synchronizedMap(new HashMap<File, Long>());
-		protected File cacheDir;
+		File cacheDir;
 
 		private ACacheManager(File cacheDir, long sizeLimit, int countLimit) {
 			this.cacheDir = cacheDir;

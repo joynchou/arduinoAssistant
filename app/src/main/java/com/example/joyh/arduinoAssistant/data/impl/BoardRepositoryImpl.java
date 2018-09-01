@@ -158,7 +158,7 @@ public class BoardRepositoryImpl implements BoardRepository {
                 //System.out.println(titles.toString());
                 for (Element title : titles) {
                     //将找到的标签数据封装起来
-                    String totalURL = new String();
+                    String totalURL = "";
                     Elements imgURL = title.getElementsByTag("img");
                     System.out.println(imgURL.attr("src"));
                     totalURL = "https://www.arduino.cc" + imgURL.attr("src");
@@ -191,7 +191,7 @@ public class BoardRepositoryImpl implements BoardRepository {
         } else {
             Log.i("缓存", "没有" + tag + "的缓存存在");
             try {
-                detailURL = new String();
+                detailURL = "";
                 Document doc = Jsoup.connect(this.getArduinoDeviceWebsite()).timeout(10000).get();
                 Element elements = doc.getElementById("entrylevel");
                 Elements titles = elements.getElementsByAttributeValue("class", "medium-6 medium-6 small-4 columns grid-img");

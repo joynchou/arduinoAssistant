@@ -15,7 +15,7 @@ import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
  */
 public abstract class AbstractInteractor implements Interactor {
 
-    protected Executor   mThreadExecutor;
+    private Executor   mThreadExecutor;
     protected MainThread mMainThread;
 
     private volatile boolean mIsCanceled;

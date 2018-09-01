@@ -55,12 +55,12 @@ public class DownloaderRecyclerViewAdapter extends
     private List<String> boardImage;
     private List<Integer> downloadState;
     private List<Integer> downloadPresent;
-    List<String> content;
+    private List<String> content;
     private MainThread mainThread;
     private AdapterInterface.Callback callback;
     private Activity context;
     private BoardRepositoryImpl boardRepository;
-    int sysVersion = Integer.parseInt(Build.VERSION.SDK);
+    private int sysVersion = Integer.parseInt(Build.VERSION.SDK);
 
     public DownloaderRecyclerViewAdapter(Activity context, List<String> images, List<String> boardName, List<String> contents, BoardRepositoryImpl boardRepository, AdapterInterface.Callback callback) {
         this.boardName = boardName;
@@ -201,7 +201,7 @@ public class DownloaderRecyclerViewAdapter extends
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 holder.backgroundImage.setImageBitmap(resource);
-                Bitmap bm = ((BitmapDrawable) ((ImageView) holder.backgroundImage).getDrawable()).getBitmap();
+                Bitmap bm = ((BitmapDrawable) holder.backgroundImage.getDrawable()).getBitmap();
                 saveImage(bm, boardName.get(position));
             }
         };
@@ -212,27 +212,21 @@ public class DownloaderRecyclerViewAdapter extends
         switch (downloadState.get(position)) {
             case DOWNLOAD_STATE_DOWNLOADING:
                 holder.download.setText("暂停");
-                ;
                 break;
             case DOWNLOAD_STATE_FINISH:
                 holder.download.setText("查看");
-                ;
                 break;
             case DOWNLOAD_STATE_PAUSE:
                 holder.download.setText("继续");
-                ;
                 break;
             case DOWNLOAD_STATE_UNDOWNLOAD:
                 holder.download.setText("下载");
-                ;
                 break;
             case DOWNLOAD_STATE_RESUME:
                 holder.download.setText("暂停");
-                ;
                 break;
             case DOWNLOAD_STATE_RETRY:
                 holder.download.setText("重试");
-                ;
                 break;
         }
 

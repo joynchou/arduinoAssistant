@@ -10,12 +10,12 @@ import com.example.joyh.arduinoAssistant.domain.interactors.base.Interactor;
 
 public interface DownloadBoardResourceInteractor extends Interactor {
     //下载状态
-    public static final int DOWNLOAD_STATE_UNDOWNLOAD = 0;//没有下载
-    public static final int DOWNLOAD_STATE_DOWNLOADING = 1;//正在下载
-    public static final int DOWNLOAD_STATE_PAUSE = 2;//下载暂停
-    public static final int DOWNLOAD_STATE_FINISH = 3;//下载完成
-    public static final int DOWNLOAD_STATE_RESUME = 4;//下载继续
-    public static final int DOWNLOAD_STATE_RETRY = 5;//失败重试
+    int DOWNLOAD_STATE_UNDOWNLOAD = 0;//没有下载
+    int DOWNLOAD_STATE_DOWNLOADING = 1;//正在下载
+    int DOWNLOAD_STATE_PAUSE = 2;//下载暂停
+    int DOWNLOAD_STATE_FINISH = 3;//下载完成
+    int DOWNLOAD_STATE_RESUME = 4;//下载继续
+    int DOWNLOAD_STATE_RETRY = 5;//失败重试
     interface Callback{
         void onBoardDownloadProgressChange(String boardName,int listPositon,int progress);
         void onBoardDownloadFailed(String boardName,int listPositon,String error);

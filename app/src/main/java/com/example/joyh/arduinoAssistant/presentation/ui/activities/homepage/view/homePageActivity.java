@@ -56,7 +56,7 @@ public class homePageActivity extends AppCompatActivity implements IHomePageView
         android.util.Log.d("BaiduMobStat", "Test DeviceId : " + testDeviceId);
         StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary),false);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("主页");
         //设置顶部工具条
         setSupportActionBar(toolbar);
@@ -65,9 +65,9 @@ public class homePageActivity extends AppCompatActivity implements IHomePageView
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
