@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:fitsSystemWindows="true"
+        android:key="switch_savetoSDcard"
+        android:summary="下载缓存的视频默认保存至SD卡 "
+        android:switchTextOff="下载缓存的视频默认保存至手机内存"
+        android:switchTextOn="下载缓存的视频默认保存至SD卡 "
+        android:title="视频保存至SD卡 " />
+</PreferenceScreen>

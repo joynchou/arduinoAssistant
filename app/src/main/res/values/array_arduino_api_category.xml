@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="arduino_api_categort" >
+    <item name="Digital_IO">Digital I/O </item>
+    <item name="Math">Math </item>
+    <item name="Random_Numbers">Random Numbers</item>
+    <item name="Analog_IO"> Analog I/O </item>
+</string-array>
+
+    
+</resources>

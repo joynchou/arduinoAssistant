@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.joyh.arduinoAssistant">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <application
+        android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.ArduinoAssistant"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Base.Theme.DesignDemo">
+        <activity
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.LaunchActivity"
+
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <meta-data
+                android:name="BaiduMobAd_STAT_ID"
+                android:value="62f930953e" />
+
+            <intent-filter>
+
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity"
+
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.about.aboutSoftWareActivity"
+            android:parentActivityName="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity" />
+        </activity>
+        <activity
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo.APIInfoActivity"
+            android:parentActivityName="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity" />
+        </activity>
+        <activity
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.HardWareInfoActivity"
+            android:parentActivityName="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity" />
+        </activity>
+        <activity android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo.APIInfoDetails" />
+
+        <activity
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.BoardDownloader"
+            android:parentActivityName="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.HardWareInfoActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.HardWareInfoActivity" />
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+    </application>
+
+</manifest>

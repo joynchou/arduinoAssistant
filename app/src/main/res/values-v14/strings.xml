@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="toast_no_availabel_board">没有已下载的开发板,点击下载器进行下载</string>
+</resources>
