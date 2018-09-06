@@ -46,7 +46,7 @@ import java.util.Map;
  */
 
 public class BoardDownloader extends SwipeBackActivity implements BoardDownloaderPresenter.View,
-        AdapterInterface.Callback,
+        DownloaderRecyclerViewAdapterInterface.Callback,
         FileDownloaderInterface.Callback,
         BoardRepository.Callback {
     private BoardDownloaderPresenter mainPresenter;
@@ -59,7 +59,7 @@ public class BoardDownloader extends SwipeBackActivity implements BoardDownloade
     private BaseDownloadTask downloadTask;
     private Map<String, FileDownloader> downloadMap;
     private Map<Integer, String> taskMap;
-    private DownloaderRecyclerViewAdapter adapter;
+    private DownloaderRecyclerViewDownloaderRecyclerViewAdapter adapter;
     private BoardRepositoryImpl boardRepository;
     private int sysVersion = Integer.parseInt(Build.VERSION.SDK);
 
@@ -108,7 +108,7 @@ public class BoardDownloader extends SwipeBackActivity implements BoardDownloade
     private List<String> content = new ArrayList<>();
     private List<Integer> present = new ArrayList<>();
 
-
+    //展示已下载的板子
     @Override
     public void onShowDownloadableBoardList(List<BoardBeanModelImpl> boards) {
 
@@ -129,7 +129,7 @@ public class BoardDownloader extends SwipeBackActivity implements BoardDownloade
         }
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        adapter = new DownloaderRecyclerViewAdapter(this, imgURL, boardname, content, boardRepository, this);
+        adapter = new DownloaderRecyclerViewDownloaderRecyclerViewAdapter(this, imgURL, boardname, content, boardRepository, this);
         callback = adapter.getCallback();
         recyclerView.setAdapter(adapter);
         if (sysVersion <= 18) {
@@ -138,6 +138,20 @@ public class BoardDownloader extends SwipeBackActivity implements BoardDownloade
 
     }
 
+    @Override
+    public void onViewDeleteBoard(String boardName) {
+
+    }
+
+    @Override
+    public void onViewNoDownloadedBoard() {
+
+    }
+
+    @Override
+    public void onViewshowDownloadedBoards(List<BoardBeanModelImpl> boards) {
+
+    }
 
     @Override
     public void showProgress() {

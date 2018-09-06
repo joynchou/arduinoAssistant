@@ -1,4 +1,4 @@
-package com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo;
+package com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl;
 
 import android.util.Log;
 
@@ -6,6 +6,7 @@ import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractInteractor;
 
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractor;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * Created by joyn on 2018/8/24 0024.
  * 用例：下载开发板
+ * Interactor :download boards
  */
 
 public class DownloadBoardResourceInteractorImpl extends AbstractInteractor implements
@@ -86,16 +88,22 @@ public class DownloadBoardResourceInteractorImpl extends AbstractInteractor impl
         Log.i("model", "准备下载： " + name);
         System.out.println("要下载的名称：" + name);
         String boardDetailURL = boardRepository.getBoardDetailURL(name);
-        Log.i("boardDetailURL", boardDetailURL);
-        List<String> allresource;
-        allresource = boardRepository.getAllResource(boardDetailURL);
-        Log.i("allresource", allresource.toString());
+        if(boardDetailURL!=null){
+            Log.i("boardDetailURL", boardDetailURL);
+            List<String> allresource;
+            allresource = boardRepository.getAllResource(boardDetailURL);
+            Log.i("allresource", allresource.toString());
 
-        for (int i = 0; i < allresource.size(); i++) {
-             //TODO:其实这里不应该在view中去实现下载，因为view是处理ui变化的，而下载是内部线程，不是ui
-            //暂时没有好的解决方案
-            callback.onDownloadResource(allresource.get(i), name, listPosition);
+            for (int i = 0; i < allresource.size(); i++) {
+                //TODO:其实这里不应该在view中去实现下载，因为view是处理ui变化的，而下载是内部线程，不是ui
+                //暂时没有好的解决方案
+                callback.onDownloadResource(allresource.get(i), name, listPosition);
+            }
         }
+        else{
+            Log.e("boardDetailURL", "is null");
+        }
+
 
     }
 

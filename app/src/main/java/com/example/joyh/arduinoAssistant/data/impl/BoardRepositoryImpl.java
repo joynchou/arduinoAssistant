@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.BoardCollectionInteractor;
 import com.example.joyh.arduinoAssistant.domain.model.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 
 import org.jsoup.Jsoup;
@@ -28,6 +30,7 @@ public class BoardRepositoryImpl implements BoardRepository {
 
     private Context context;
     private BoardRepository.Callback callback;
+    private int availableBoardAmount;
 
     public BoardRepositoryImpl(Context context, BoardRepository.Callback callback) {
         this.context = context;
@@ -37,14 +40,71 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public int getAvailableBoardAmount() {
 
-        return 0;
+        return this.getAvailableBoards().size();
     }
 
     @Override
     public List<BoardBeanModelImpl> getAvailableBoards() {
-        ACache cache = ACache.get(context);
 
-        return null;
+        int amount=0;
+        List<String> boardName=this.getDownloadableBoardName(ENTRY_LEVEL);
+        List<BoardBeanModelImpl> availableBoards=new ArrayList<>();
+        BoardBeanModelImpl singleBoard;
+        String TAG="file";
+
+        for(int i=0;i<boardName.size();i++) {
+            File zipFile = new File(this.boardDownloadSavePath(boardName.get(i)));
+            File jpgFile =new File(this.boardImgDownloadSavePath(boardName.get(i)));
+            if(zipFile.exists()){
+                if(jpgFile.exists()){
+                    singleBoard=new BoardBeanModelImpl();
+                    singleBoard.setBoardName(boardName.get(i));
+                    singleBoard.setPicPath(jpgFile.toString());
+                    availableBoards.add(singleBoard);
+
+                }
+                else{
+                    Log.w(TAG, jpgFile.toString()+"is not exists" );
+                }
+            }
+            else{
+                Log.w(TAG, zipFile.toString()+"is not exists" );
+            }
+        }
+
+
+
+        this.availableBoardAmount=amount;
+        return availableBoards;
+    }
+
+    @Override
+    public List<BoardBeanModelImpl> getDownloadableBoards() {
+        //所有板子
+        List<BoardBeanModelImpl> allBoardList =new ArrayList<>();
+        //取得已经下载的板子
+        List<BoardBeanModelImpl> downloadedBoardList =this.getAvailableBoards();
+        List<BoardBeanModelImpl> downloadableBoardList=new ArrayList<>();
+        List<String> boardName;
+        List<String> boardURL;
+
+        boardName = this.getDownloadableBoardName(BoardRepository.ENTRY_LEVEL);
+        boardURL = this.getDownloadableBoardImgURL(BoardRepository.ENTRY_LEVEL);
+        boardName.addAll(this.getDownloadableBoardName(BoardRepository.ENHANCED_FEATURES));
+        boardURL.addAll(this.getDownloadableBoardImgURL(BoardRepository.ENHANCED_FEATURES));
+//        boardName.addAll(this.getDownloadableBoardName(BoardRepository.RETIRED));
+//        boardURL.addAll(this.getDownloadableBoardImgURL(BoardRepository.RETIRED));
+        for (int i = 0; i < boardName.size(); i++) {
+            BoardBeanModelImpl board = new BoardBeanModelImpl();
+            board.setBoardName(boardName.get(i));
+            board.setPicURL(boardURL.get(i));
+            allBoardList.add(board);
+
+        }
+
+        allBoardList.removeAll(downloadedBoardList);
+        downloadableBoardList=allBoardList;
+        return downloadableBoardList;
     }
 
     @Override
@@ -60,6 +120,38 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public void queryBoardResource(String boradName) {
 
+    }
+
+    @Override
+    public void changeCollectionState(CollectionModel model, boolean state) {
+        ACache cache=ACache.get(context);
+        String tag=model.getName()+model.getType();
+        cache.put(tag,state);
+
+
+
+    }
+
+    @Override
+    public boolean getCollectionState(CollectionModel model) {
+        ACache cache = ACache.get(context);
+        String tag=model.getName()+model.getType();
+        Boolean state=(Boolean) cache.getAsObject(tag);
+
+        //TODO: 存储收藏状态信息
+        //如果已经有缓存
+        if(state!=null){
+            Log.i("缓存", "已有"+tag+"的缓存存在");
+            return state;
+        }
+        //没有缓存
+        else{
+            Log.i("缓存", "没有"+tag+"的缓存存在");
+            state=false;
+            cache.put(tag,state);
+
+        }
+        return state;
     }
 
     @Override
@@ -178,21 +270,22 @@ public class BoardRepositoryImpl implements BoardRepository {
         return boardImgURL;
 
     }
-
+    //bug已修复
     @Override
     public String getBoardDetailURL(String boardName) {
 
         ACache cache = ACache.get(context);
         String tag = boardName + "BoardDetailURL";
-        String detailURL = null;
+        String detailURL = cache.getAsString(tag);
         //如果已经存在缓存了
-        if (cache.getAsString(tag).equals("") == false) {
+        if (detailURL!=null && !detailURL.isEmpty()) {
             Log.i("缓存", "有" + tag + "的缓存存在");
+            detailURL=cache.getAsString(tag);
         } else {
             Log.i("缓存", "没有" + tag + "的缓存存在");
             try {
                 detailURL = "";
-                Document doc = Jsoup.connect(this.getArduinoDeviceWebsite()).timeout(10000).get();
+                Document doc = Jsoup.connect("https://www.arduino.cc/en/Main/Products").timeout(3000).get();
                 Element elements = doc.getElementById("entrylevel");
                 Elements titles = elements.getElementsByAttributeValue("class", "medium-6 medium-6 small-4 columns grid-img");
                 for (int i = 0; i < titles.size(); i++) {
@@ -209,7 +302,7 @@ public class BoardRepositoryImpl implements BoardRepository {
                         System.out.println(detailURL);
                         cache.put(tag, detailURL);
                     } else {
-                        // detailURL="error";
+
                         //System.out.println("不匹配");
                     }
                 }
@@ -285,6 +378,22 @@ public class BoardRepositoryImpl implements BoardRepository {
                 + File.separator
                 + toSavedBoardName
                 + ".zip";
+        return path;
+    }
+    public String boardImgDownloadSavePath(String toSavedBoardName) {
+        String path;
+        String defaultRootPath =
+                Environment.getExternalStorageDirectory().getPath();
+        path = defaultRootPath
+                + File.separator
+                + "ArduinoResource"
+                + File.separator
+                + "boardResource"
+                + File.separator
+                + toSavedBoardName
+                + File.separator
+                + toSavedBoardName
+                + ".jpg";
         return path;
     }
 

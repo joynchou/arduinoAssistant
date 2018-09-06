@@ -9,15 +9,12 @@ import java.util.List;
  * Created by joyn on 2018/8/21 0021.
  */
 
-public interface HardwareInfoShowDownloadableBoardsInteractor extends Interactor {
+public interface ShowAvailableBoardsInteractor extends Interactor {
     interface Callback{
-        void onShowDownLoadableBoardsError(String err);
-        void onShowDownloadableBoards(List<BoardBeanModelImpl> boards);
-        void onNoDownloadableBoard();
-
+        void onAvailableBoard(List<BoardBeanModelImpl> boards,List<Boolean> collectionState);
+        void onShowAvailableBoardsError(String err);
         void onShowProgress();
         void onHideProgress();
     }
-    List<BoardBeanModelImpl>  showDownloadableBoards();
-    void refreshDownloadList();
+    void showAvailableBoard();
 }

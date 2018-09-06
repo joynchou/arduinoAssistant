@@ -21,7 +21,7 @@ public abstract class AbstractInteractor implements Interactor {
     private volatile boolean mIsCanceled;
     private volatile boolean mIsRunning;
 
-    protected AbstractInteractor(Executor threadExecutor, MainThread mainThread) {
+    protected  AbstractInteractor(Executor threadExecutor, MainThread mainThread) {
         mThreadExecutor = threadExecutor;
         mMainThread = mainThread;
     }

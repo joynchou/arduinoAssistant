@@ -1,9 +1,12 @@
-package com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo;
+package com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl;
+
+import android.util.Log;
 
 import com.example.joyh.arduinoAssistant.data.impl.MessageRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractInteractor;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoInteractor;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 import com.example.joyh.arduinoAssistant.domain.repository.MessageRepository;
 
@@ -11,6 +14,8 @@ import com.example.joyh.arduinoAssistant.domain.repository.MessageRepository;
 
 /**
  * Created by joyn on 2018/8/21 0021.
+ * 用例：硬件查询模块主interactor，
+ * Interactor : hardware info main interactor
  */
 
 public class HardwareInfoInteractorImpl extends AbstractInteractor implements HardwareInfoInteractor {
@@ -19,7 +24,7 @@ public class HardwareInfoInteractorImpl extends AbstractInteractor implements Ha
     private MessageRepository mMessageRepository;
 
     private BoardRepository boardRepository;
-    private HardwareInfoShowAvailableBoardsInteractorImpl showAvailableBoardsInteractor;
+    private ShowAvailableBoardsInteractorImpl showAvailableBoardsInteractor;
 
 
     public HardwareInfoInteractorImpl(Executor threadExecutor,
@@ -27,7 +32,7 @@ public class HardwareInfoInteractorImpl extends AbstractInteractor implements Ha
                                       BoardRepository boardRepository,
                                       HardwareInfoInteractor.Callback callback,
 
-                                      HardwareInfoShowAvailableBoardsInteractorImpl showAvailableBoardsInteractor
+                                      ShowAvailableBoardsInteractorImpl showAvailableBoardsInteractor
     ) {
         super(threadExecutor, mainThread);
         this.callback = callback;
@@ -52,7 +57,9 @@ public class HardwareInfoInteractorImpl extends AbstractInteractor implements Ha
     public void showBoards() {
         if (boardRepository.getAvailableBoardAmount() != 0) {
             showAvailableBoardsInteractor.execute();
+            Log.i("板子数量", "有"+boardRepository.getAvailableBoardAmount()+"个板子");
         } else {
+            Log.i("板子数量", "没有板子");
             noBoardAvailabel();
 
         }

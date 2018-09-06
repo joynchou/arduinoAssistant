@@ -6,9 +6,11 @@ import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractor;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractorImpl;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoShowDownloadableBoardsInteractor;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoShowDownloadableBoardsInteractorImpl;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowDownloadedBoardInteractor;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DownloadBoardResourceInteractorImpl;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowDownloadableBoardsInteractor;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowDownloadableBoardsInteractorImpl;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowDownloadedBoardInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
 import com.example.joyh.arduinoAssistant.presentation.presenters.BoardDownloaderPresenter;
 import com.example.joyh.arduinoAssistant.presentation.presenters.base.AbstractPresenter;
@@ -20,11 +22,14 @@ import java.util.List;
  */
 
 public class BoardDownLoaderPresenterImpl extends AbstractPresenter implements BoardDownloaderPresenter,
-        HardwareInfoShowDownloadableBoardsInteractor.Callback ,
-        DownloadBoardResourceInteractor.Callback{
+        ShowDownloadableBoardsInteractor.Callback ,
+        DownloadBoardResourceInteractor.Callback,
+        ShowDownloadedBoardInteractor.Callback
+{
     private BoardDownloaderPresenter.View view;
-    private HardwareInfoShowDownloadableBoardsInteractorImpl infoShowDownloadableBoardsInteractor;
+    private ShowDownloadableBoardsInteractorImpl infoShowDownloadableBoardsInteractor;
     private DownloadBoardResourceInteractorImpl downloadBoardResourceInteractor;
+    private ShowDownloadedBoardInteractorImpl downloadedBoardInteractor;
     private BoardRepositoryImpl boardRepository;
     public BoardDownLoaderPresenterImpl(Executor threadExecutor, MainThread mainThread, BoardRepositoryImpl boardRepository, View view) {
         super(threadExecutor, mainThread);
@@ -49,14 +54,16 @@ public class BoardDownLoaderPresenterImpl extends AbstractPresenter implements B
     @Override
     public void resume() {
         infoShowDownloadableBoardsInteractor=
-                new HardwareInfoShowDownloadableBoardsInteractorImpl(
+                new ShowDownloadableBoardsInteractorImpl(
                         mExecutor,
                         mMainThread,
                         boardRepository,
                         this);
         infoShowDownloadableBoardsInteractor.execute();
+
         downloadBoardResourceInteractor=
                 new DownloadBoardResourceInteractorImpl(mExecutor,mMainThread,boardRepository,this);
+        downloadedBoardInteractor=new ShowDownloadedBoardInteractorImpl(mExecutor,mMainThread,boardRepository,this);
         //不用execute()
     }
 
@@ -121,7 +128,23 @@ public class BoardDownLoaderPresenterImpl extends AbstractPresenter implements B
         Log.i("可下载的板子", "onShowDownloadableBoards: " + boards.toString());
         view.onShowDownloadableBoardList(boards);
     }
+    //////////////////////////////////////////////////////////
+    @Override
+    public void onDeleteBoard(String boardName) {
+        view.onViewDeleteBoard(boardName);
+    }
 
+    @Override
+    public void onNoDownloadedBoard() {
+        view.onViewNoDownloadedBoard();
+    }
+
+    @Override
+    public void onshowDownloadedBoards(List<BoardBeanModelImpl> boards) {
+        view.onViewshowDownloadedBoards(boards);
+    }
+
+    ////////////////////////////////////////////////////////
     @Override
     public void onBoardDownloadProgressChange(String boardName, int listPositon, int progress) {
         view.onProgressBarChanged(boardName, listPositon, progress);

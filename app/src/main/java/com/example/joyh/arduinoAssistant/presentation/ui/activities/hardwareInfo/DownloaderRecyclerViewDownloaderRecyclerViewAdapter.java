@@ -36,20 +36,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_DOWNLOADING;
-import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_FINISH;
-import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_PAUSE;
-import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_RESUME;
-import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_RETRY;
-import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_UNDOWNLOAD;
+import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_DOWNLOADING;
+import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_FINISH;
+import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_PAUSE;
+import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_RESUME;
+import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_RETRY;
+import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DownloadBoardResourceInteractorImpl.DOWNLOAD_STATE_UNDOWNLOAD;
 
 /**
  * Created by joyn on 2018/8/24 0024.
  */
 
-public class DownloaderRecyclerViewAdapter extends
-        RecyclerView.Adapter<DownloaderRecyclerViewAdapter.ViewHolder> implements
-        AdapterInterface,
+public class DownloaderRecyclerViewDownloaderRecyclerViewAdapter extends
+        RecyclerView.Adapter<DownloaderRecyclerViewDownloaderRecyclerViewAdapter.ViewHolder> implements
+        DownloaderRecyclerViewAdapterInterface,
         BoardDownloaderInterface.Callback {
     private List<String> boardName;
     private List<String> boardImage;
@@ -57,12 +57,12 @@ public class DownloaderRecyclerViewAdapter extends
     private List<Integer> downloadPresent;
     private List<String> content;
     private MainThread mainThread;
-    private AdapterInterface.Callback callback;
+    private DownloaderRecyclerViewAdapterInterface.Callback callback;
     private Activity context;
     private BoardRepositoryImpl boardRepository;
     private int sysVersion = Integer.parseInt(Build.VERSION.SDK);
 
-    public DownloaderRecyclerViewAdapter(Activity context, List<String> images, List<String> boardName, List<String> contents, BoardRepositoryImpl boardRepository, AdapterInterface.Callback callback) {
+    public DownloaderRecyclerViewDownloaderRecyclerViewAdapter(Activity context, List<String> images, List<String> boardName, List<String> contents, BoardRepositoryImpl boardRepository, DownloaderRecyclerViewAdapterInterface.Callback callback) {
         this.boardName = boardName;
         this.boardImage = images;
         this.content = contents;
@@ -179,6 +179,7 @@ public class DownloaderRecyclerViewAdapter extends
         File appDir = new File(path, name);
         if (!appDir.exists()) {
             appDir.mkdir();
+            Log.i("创建目录", appDir.toString());
         }
         String fileName = name + ".jpg";
         File file = new File(appDir, fileName);
@@ -207,7 +208,7 @@ public class DownloaderRecyclerViewAdapter extends
         };
         holder.title.setText(boardName.get(position));
 
-        Glide.with(context).asBitmap().load(boardImage.get(position)).thumbnail(0.1f).into(mSimpleTarget);
+        Glide.with(context).asBitmap().load(boardImage.get(position)).into(mSimpleTarget);
 
         switch (downloadState.get(position)) {
             case DOWNLOAD_STATE_DOWNLOADING:

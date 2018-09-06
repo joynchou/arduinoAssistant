@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.aitangba.swipeback.SwipeBackActivity;
 import com.example.joyh.arduinoAssistant.R;
@@ -34,6 +34,7 @@ import com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo.TabF
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 import com.githang.statusbar.StatusBarCompat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -43,8 +44,9 @@ import butterknife.OnClick;
  * Created by joyn on 2018/8/11 0011.
  */
 
-public class HardWareInfoActivity extends SwipeBackActivity implements HardwareInfoPresenter.View ,
-        BoardRepository.Callback{
+public class HardWareInfoActivity extends SwipeBackActivity implements HardwareInfoPresenter.View,
+        BoardRepository.Callback,
+        AvailableBoardsRecyclerViewAdapterInterface.Callback {
     private HardwareInfoPresenter mainPresenter;
     private BoardRepositoryImpl boardRepository;
     private ProgressBar progressBar;
@@ -52,11 +54,14 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     private ArduinoFragment arduinoFragment;
     private Intent intent;
     private TextView info;
+    private RecyclerView recyclerView;
+    private AvailableBoardsRecyclerViewAdapter recyclerViewAdapter;
 
     @OnClick(R.id.button_search)
-    void buttonSearch(){
+    void buttonSearch() {
 
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +69,10 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
         ButterKnife.bind(this);
         initPresenter();
         initToorbor();
-        intent=new Intent(HardWareInfoActivity.this, BoardDownloader.class);
-
+        intent = new Intent(HardWareInfoActivity.this, BoardDownloader.class);
+        recyclerView = findViewById(R.id.RecyclerView);
         progressBar = findViewById(R.id.progressBar);
-        info=findViewById(R.id.info_text);
-
-
+        info = findViewById(R.id.info_text);
 
         StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary), false);
 
@@ -77,13 +80,11 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
         ViewPager viewPager = findViewById(R.id.viewPager);
         if (viewPager != null) {
             setupViewPager(viewPager);
+        } else {
+            Log.w("viwepager", "onCreate: " + "viewpager is null");
+            showInfo("onCreate: " + "viewpager is null");
         }
-        else {
-            Log.w("viwepager", "onCreate: "+"viewpager is null" );
-            showInfo("onCreate: "+"viewpager is null");
-        }
-        TabLayout tabLayout = findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+
         mainPresenter.resume();
     }
 
@@ -132,7 +133,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
             case R.id.homeAsUp:
                 break;
             case R.id.menu_downloader:
-                Intent intent=new Intent(HardWareInfoActivity.this, BoardDownloader.class);
+                Intent intent = new Intent(HardWareInfoActivity.this, BoardDownloader.class);
                 startActivity(intent);
                 break;
 
@@ -144,7 +145,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     @Override
     public void onShowNoAvailableBoard() {
         showInfo(getString(R.string.toast_no_availabel_board));
-        intent.putExtra("available_board",0);
+        intent.putExtra("available_board", 0);
         info.setVisibility(View.VISIBLE);
 
     }
@@ -156,8 +157,29 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     }
 
     @Override
-    public void onShowBoards(List<BoardBeanModelImpl> boards) {
+    public void onShowBoards(List<BoardBeanModelImpl> boards,List<Boolean> collectionState ) {
+        List<String> boardName = new ArrayList<>();
+        List<String> boardImg = new ArrayList<>();
+        for (int i = 0; i < boards.size(); i++) {
+            boardName.add(boards.get(i).getBoardName());
+            boardImg.add(boards.get(i).getPicPath());
+        }
+        info.setVisibility(View.INVISIBLE);
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.setVisibility(View.VISIBLE);
+        recyclerViewAdapter = new AvailableBoardsRecyclerViewAdapter(boardName, boardImg, collectionState,this);
+        recyclerView.setAdapter(recyclerViewAdapter);
 
+    }
+
+    @Override
+    public void onStarButtonClicked(String boardName) {
+        mainPresenter.presenterStarButtonClicked(boardName);
+    }
+
+    @Override
+    public void onViewChangeCollectionState(String boardName, boolean state) {
+        recyclerViewAdapter.changBoardCollectionState(boardName, state);
     }
 
     @Override
@@ -189,6 +211,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     private void initToorbor() {
         final Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("硬件查询");
+        //   toolbar.setTitleTextColor(R.color.window_background);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -197,21 +220,21 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     private void initPresenter() {
         Executor executor = ThreadExecutor.getInstance();
         MainThread mainThread = MainThreadImpl.getInstance();
-        boardRepository=new BoardRepositoryImpl(getApplicationContext(),this);
+        boardRepository = new BoardRepositoryImpl(getApplicationContext(), this);
         //presenter实例化
-        mainPresenter = new HardwareInfoPresenterImpl(executor, mainThread, boardRepository,this);
+        mainPresenter = new HardwareInfoPresenterImpl(executor, mainThread, boardRepository, this);
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        Bundle bundle=new Bundle();
-        bundle.putInt("test",123);
+        Bundle bundle = new Bundle();
+        bundle.putInt("test", 123);
 
-        ArduinoBoardFragment arduinoFragment=new ArduinoBoardFragment();
+        ArduinoBoardFragment arduinoFragment = new ArduinoBoardFragment();
         arduinoFragment.setArguments(bundle);
 
         TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
-     //   adapter.addFragment(arduinoFragment, "Arduino开发板");
+        //   adapter.addFragment(arduinoFragment, "Arduino开发板");
         //adapter.addFragment(new ArduinoFragment(), "常用元件");
-     //   viewPager.setAdapter(adapter);
+        //   viewPager.setAdapter(adapter);
     }
 }

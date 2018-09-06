@@ -4,7 +4,7 @@ package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInf
  * Created by joyn on 2018/8/24 0024.
  */
 
-interface AdapterInterface {
+interface DownloaderRecyclerViewAdapterInterface {
     interface Callback{
         void onDownloadBoard(String boardName, int position,int downloadState);
 

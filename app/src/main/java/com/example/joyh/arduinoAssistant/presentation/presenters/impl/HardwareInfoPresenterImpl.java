@@ -4,12 +4,15 @@ import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
 import com.example.joyh.arduinoAssistant.data.impl.MessageRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.BoardCollectionInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoInteractor;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoInteractorImpl;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoShowAvailableBoardsInteractor;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoShowAvailableBoardsInteractorImpl;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoShowDownloadableBoardsInteractorImpl;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.BoardCollectionInteractorImlp;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.HardwareInfoInteractorImpl;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowAvailableBoardsInteractor;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowAvailableBoardsInteractorImpl;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowDownloadableBoardsInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 import com.example.joyh.arduinoAssistant.presentation.presenters.HardwareInfoPresenter;
 import com.example.joyh.arduinoAssistant.presentation.presenters.base.AbstractPresenter;
 
@@ -22,15 +25,14 @@ import java.util.List;
 public class HardwareInfoPresenterImpl extends AbstractPresenter implements
         HardwareInfoPresenter,
         HardwareInfoInteractor.Callback,
-        HardwareInfoShowAvailableBoardsInteractor.Callback {
+        ShowAvailableBoardsInteractor.Callback,
+        BoardCollectionInteractor.Callback{
 
     private HardwareInfoPresenter.View view;
     private BoardRepositoryImpl boardRepository;
     private HardwareInfoInteractorImpl infoInteractor;
-    HardwareInfoShowDownloadableBoardsInteractorImpl infoShowDownloadableBoardsInteractor;
-    private HardwareInfoShowAvailableBoardsInteractorImpl infoShowAvailableBoardsInteractor;
-    MessageRepositoryImpl mMessageRepository;
-
+    private ShowAvailableBoardsInteractorImpl infoShowAvailableBoardsInteractor;
+    private BoardCollectionInteractorImlp collectionInteractor;
     public HardwareInfoPresenterImpl(Executor executor, MainThread mainThread, BoardRepositoryImpl boardRepository, View view) {
         super(executor, mainThread);
         this.boardRepository=boardRepository;
@@ -38,17 +40,36 @@ public class HardwareInfoPresenterImpl extends AbstractPresenter implements
 
     }
 
+    @Override
+    public void presenterCollectBoard(String boardName) {
+
+    }
+
+    @Override
+    public void oneError(String error) {
+        view.showError(error);
+    }
+
+    @Override
+    public void onCollectionStateChanged(CollectionModel model, boolean state) {
+        view.onViewChangeCollectionState(model.getName(),state);
+    }
 
     //在板子浏览界面中显示已下载可用的板子
     @Override
-    public void onAvailableBoard(List<BoardBeanModelImpl> boards) {
-        view.onShowBoards(boards);
+    public void onAvailableBoard(List<BoardBeanModelImpl> boards,List<Boolean> collectionState ) {
+        view.onShowBoards(boards,collectionState);
     }
 
     //显示没有已下载可用的板子的信息
     @Override
     public void onNoBoardAvailable() {
         view.onShowNoAvailableBoard();
+    }
+
+    @Override
+    public void presenterStarButtonClicked(String boardName) {
+        collectionInteractor.usecaseStarButtonClicked(boardName);
     }
 
     @Override
@@ -70,7 +91,7 @@ public class HardwareInfoPresenterImpl extends AbstractPresenter implements
     public void resume() {
 
         infoShowAvailableBoardsInteractor =
-                new HardwareInfoShowAvailableBoardsInteractorImpl
+                new ShowAvailableBoardsInteractorImpl
                         (mExecutor, mMainThread, boardRepository,this);
 
         infoInteractor =
@@ -81,6 +102,7 @@ public class HardwareInfoPresenterImpl extends AbstractPresenter implements
                                 this,
                                 infoShowAvailableBoardsInteractor);
         infoInteractor.execute();
+        collectionInteractor=new BoardCollectionInteractorImlp(mExecutor,mMainThread,boardRepository,this);
 
     }
 

@@ -29,6 +29,10 @@ public interface BoardDownloaderPresenter extends BasePresenter {
         void onDownloadResource(String URL, String name, int position);
 
         void onBoardDownloadStarted(String boardName, int listPosition);
+        void onViewDeleteBoard(String boardName);
+        void onViewNoDownloadedBoard();
+        void onViewshowDownloadedBoards(List<BoardBeanModelImpl> boards);
+
     }
 
     void refresh();

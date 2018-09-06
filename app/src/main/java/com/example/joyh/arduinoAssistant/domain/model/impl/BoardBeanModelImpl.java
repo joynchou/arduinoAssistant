@@ -94,7 +94,6 @@ public class BoardBeanModelImpl implements BoardBeanModel {
 
         BoardBeanModelImpl that = (BoardBeanModelImpl) o;
 
-        if (boardId != that.boardId) return false;
         return boardName != null ? boardName.equals(that.boardName) : that.boardName == null;
     }
 
