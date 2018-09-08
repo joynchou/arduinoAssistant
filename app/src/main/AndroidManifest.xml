@@ -71,7 +71,7 @@
         <activity android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo.APIInfoDetails" />
 
         <activity
-            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.BoardDownloader"
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.BoardManagerActivity"
             android:parentActivityName="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.HardWareInfoActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <meta-data

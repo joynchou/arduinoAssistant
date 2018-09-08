@@ -1,6 +1,6 @@
 package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
@@ -45,24 +45,26 @@ import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardware
 
 /**
  * Created by joyn on 2018/8/24 0024.
+ * 可下载的板子recyclerview的adapter
+ * activity或者fragment需要实现这个适配器的接口
  */
 
-public class DownloaderRecyclerViewDownloaderRecyclerViewAdapter extends
-        RecyclerView.Adapter<DownloaderRecyclerViewDownloaderRecyclerViewAdapter.ViewHolder> implements
-        DownloaderRecyclerViewAdapterInterface,
-        BoardDownloaderInterface.Callback {
+public class DownloadableRecyclerViewAdapter extends
+        RecyclerView.Adapter<DownloadableRecyclerViewAdapter.ViewHolder> implements
+        DownloadableRecyclerViewAdapterInterface
+        {
     private List<String> boardName;
     private List<String> boardImage;
     private List<Integer> downloadState;
     private List<Integer> downloadPresent;
     private List<String> content;
     private MainThread mainThread;
-    private DownloaderRecyclerViewAdapterInterface.Callback callback;
-    private Activity context;
+    private DownloadableRecyclerViewAdapterInterface.Callback callback;
+    private Context context;
     private BoardRepositoryImpl boardRepository;
     private int sysVersion = Integer.parseInt(Build.VERSION.SDK);
 
-    public DownloaderRecyclerViewDownloaderRecyclerViewAdapter(Activity context, List<String> images, List<String> boardName, List<String> contents, BoardRepositoryImpl boardRepository, DownloaderRecyclerViewAdapterInterface.Callback callback) {
+    public DownloadableRecyclerViewAdapter(Context context, List<String> images, List<String> boardName, List<String> contents, BoardRepositoryImpl boardRepository, DownloadableRecyclerViewAdapterInterface.Callback callback) {
         this.boardName = boardName;
         this.boardImage = images;
         this.content = contents;
@@ -82,10 +84,7 @@ public class DownloaderRecyclerViewDownloaderRecyclerViewAdapter extends
 
     }
 
-    @Override
-    public BoardDownloaderInterface.Callback getCallback() {
-        return this;
-    }
+
 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -363,19 +362,19 @@ public class DownloaderRecyclerViewDownloaderRecyclerViewAdapter extends
     }
 
     //////此处的接口实现是用来改变view的，即ui/////////////////////////
-    @Override
+
     public void onProgressBarChanged(String boardName, int listPosition, int progress) {
         this.changeDownloadProgress(boardName, progress);
         this.changeDownloadState(boardName, DOWNLOAD_STATE_DOWNLOADING);
 
     }
 
-    @Override
+
     public void onBoardDownloadFailed(String boardName, int listPosition) {
         this.changeDownloadState(boardName, DOWNLOAD_STATE_RETRY);
     }
 
-    @Override
+
     public void onBoardDownloadFinish(String boardName, int listPosition) {
         changeDownloadProgress(boardName, 100);
         this.changeDownloadState(boardName, DOWNLOAD_STATE_FINISH);
@@ -383,23 +382,23 @@ public class DownloaderRecyclerViewDownloaderRecyclerViewAdapter extends
     }
 
     //下载暂停，按钮显示继续
-    @Override
+
     public void onBoardDownloadPause(String boardName, int listPosition) {
         this.changeDownloadState(boardName, DOWNLOAD_STATE_PAUSE);
     }
 
-    @Override
+
     public void onBoardDownloadResume(String boardName, int listPosition) {
         this.changeDownloadState(boardName, DOWNLOAD_STATE_RESUME);
     }
 
-    @Override
+
     public void onBoardDownloadRetry(String boardName, int listPosition) {
         this.changeDownloadState(boardName, DOWNLOAD_STATE_RETRY);
     }
 
     //开始下载
-    @Override
+
     public void onBoardDownloadStarted(String boardName, int listPosition) {
         this.changeDownloadState(boardName, DOWNLOAD_STATE_DOWNLOADING);
     }

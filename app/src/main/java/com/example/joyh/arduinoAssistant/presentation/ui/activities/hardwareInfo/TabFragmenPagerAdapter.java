@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Created by joyn on 2018/8/18 0018.
- *
+ * 开发板管理器的viewpager适配器
  */
 
 class TabFragmenPagerAdapter extends FragmentPagerAdapter {
@@ -21,6 +21,10 @@ class TabFragmenPagerAdapter extends FragmentPagerAdapter {
         this.mlist = mlist;
     }
 
+    public TabFragmenPagerAdapter(FragmentManager fm){
+        super(fm);
+
+    }
     public void addFragment(Fragment fragment , String title) {
         mlist.add(fragment);
         mFragmentTitles.add(title);

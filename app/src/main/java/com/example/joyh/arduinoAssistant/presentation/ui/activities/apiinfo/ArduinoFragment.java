@@ -2,6 +2,7 @@ package com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +31,7 @@ import java.util.List;
 
 /**
  * Created by joyn on 2018/8/10 0010.
+ * 测试用fragment
  */
 
 public class ArduinoFragment extends Fragment  {
@@ -48,16 +50,16 @@ public class ArduinoFragment extends Fragment  {
 
     private void setupRecyclerView(RecyclerView recyclerView) {
         List<String> titles = new ArrayList<>();
-        List<String> imageViews = new ArrayList<>();
+        List<Bitmap> imageViews = new ArrayList<>();
         List<String> contens = new ArrayList<>();
         boolean starRecord[] = new boolean[10];
         //这是一些测试数据，需要创建适配器来和仓库适配，以便读取数据库中的数据
         titles.add("nano");
         titles.add("mega");
         titles.add("uno");
-//       imageViews.add(BitmapFactory.decodeResource(getResources(), R.drawable.nano));
-//        imageViews.add(BitmapFactory.decodeResource(getResources(), R.drawable.mega));
-//        imageViews.add(BitmapFactory.decodeResource(getResources(), R.drawable.uno));
+       imageViews.add(BitmapFactory.decodeResource(getResources(), R.drawable.nano));
+        imageViews.add(BitmapFactory.decodeResource(getResources(), R.drawable.mega));
+        imageViews.add(BitmapFactory.decodeResource(getResources(), R.drawable.uno));
 
         contens.add("The Arduino Nano is a small, complete, and breadboard-friendly board based on the ATmega328P; offers the same connectivity and specs of the UNO board in a smaller form factor.");
         contens.add("The Arduino Mega 2560 is a microcontroller board based on the ATmega2560. It has 54 digital input/output pins (of which 15 can be used as PWM outputs), 16 analog inputs, 4 UARTs (hardware serial ports)");
@@ -76,11 +78,11 @@ public class ArduinoFragment extends Fragment  {
             RecyclerView.Adapter<APIInfoFragmentRecyclerViewAdapter.ViewHolder> {
 
         private List<String> titles;
-        private List<String> imageViews;
+        private List<Bitmap> imageViews;
         private List<String> content;
         private boolean starRecord[];
 
-        public APIInfoFragmentRecyclerViewAdapter(Context context, List<String> images, List<String> titles, List<String> contents, boolean starRecord[]) {
+        public APIInfoFragmentRecyclerViewAdapter(Context context, List<Bitmap> images, List<String> titles, List<String> contents, boolean starRecord[]) {
             this.titles = titles;
             imageViews = images;
             this.content = contents;
@@ -104,7 +106,7 @@ public class ArduinoFragment extends Fragment  {
 
                 backgroundImage = itemView.findViewById(R.id.backgroundImage);
                 starButton = itemView.findViewById(R.id.btn_star);
-                content = itemView.findViewById(R.id.content);
+               // content = itemView.findViewById(R.id.content);
                 cardView = itemView.findViewById(R.id.cardview);
 
 
@@ -124,11 +126,12 @@ public class ArduinoFragment extends Fragment  {
         public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
             holder.title.setText(titles.get(position));
 
-            holder.content.setText(content.get(position));
+            //holder.content.setText(content.get(position));
 
             if (starRecord[position] == true) {
                 holder.starButton.setImageResource(R.drawable.ic_star);
             }
+            holder.backgroundImage.setImageBitmap(imageViews.get(position));
             Bitmap bm = ((BitmapDrawable) holder.backgroundImage.getDrawable()).getBitmap();
             Palette.generateAsync(bm, new Palette.PaletteAsyncListener() {
                 @Override

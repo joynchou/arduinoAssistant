@@ -20,6 +20,6 @@ public interface ShowDownloadedBoardInteractor  extends Interactor{
         void onError(String error);
     }
     void deletaBoard(String boardName);
-    List<BoardBeanModelImpl> showDownloadedBoards();
+    void showDownloadedBoards();
     void refreshDownloadedList();
 }

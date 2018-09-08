@@ -22,6 +22,7 @@ import java.util.List;
 
 /**
  * Created by joyn on 2018/9/3 0003.
+ * 开发板卡片展示界面recyclerview的adapter
  */
 
 public class AvailableBoardsRecyclerViewAdapter extends RecyclerView.Adapter<AvailableBoardsRecyclerViewAdapter.viewHolder> {

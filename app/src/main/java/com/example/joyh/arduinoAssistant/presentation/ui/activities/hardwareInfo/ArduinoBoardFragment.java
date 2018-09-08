@@ -27,6 +27,7 @@ import java.util.List;
 
 /**
  * Created by joyn on 2018/8/18 0018.
+ * 无效的fragment。可以作为展示作用
  *
  */
 

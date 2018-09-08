@@ -285,7 +285,7 @@ public class BoardRepositoryImpl implements BoardRepository {
             Log.i("缓存", "没有" + tag + "的缓存存在");
             try {
                 detailURL = "";
-                Document doc = Jsoup.connect("https://www.arduino.cc/en/Main/Products").timeout(3000).get();
+                Document doc = Jsoup.connect("https://www.arduino.cc/en/Main/Products").timeout(10000).get();
                 Element elements = doc.getElementById("entrylevel");
                 Elements titles = elements.getElementsByAttributeValue("class", "medium-6 medium-6 small-4 columns grid-img");
                 for (int i = 0; i < titles.size(); i++) {

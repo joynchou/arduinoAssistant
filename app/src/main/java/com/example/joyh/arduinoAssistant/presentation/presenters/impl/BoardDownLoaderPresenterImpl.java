@@ -23,13 +23,11 @@ import java.util.List;
 
 public class BoardDownLoaderPresenterImpl extends AbstractPresenter implements BoardDownloaderPresenter,
         ShowDownloadableBoardsInteractor.Callback ,
-        DownloadBoardResourceInteractor.Callback,
-        ShowDownloadedBoardInteractor.Callback
+        DownloadBoardResourceInteractor.Callback
 {
     private BoardDownloaderPresenter.View view;
     private ShowDownloadableBoardsInteractorImpl infoShowDownloadableBoardsInteractor;
     private DownloadBoardResourceInteractorImpl downloadBoardResourceInteractor;
-    private ShowDownloadedBoardInteractorImpl downloadedBoardInteractor;
     private BoardRepositoryImpl boardRepository;
     public BoardDownLoaderPresenterImpl(Executor threadExecutor, MainThread mainThread, BoardRepositoryImpl boardRepository, View view) {
         super(threadExecutor, mainThread);
@@ -63,7 +61,7 @@ public class BoardDownLoaderPresenterImpl extends AbstractPresenter implements B
 
         downloadBoardResourceInteractor=
                 new DownloadBoardResourceInteractorImpl(mExecutor,mMainThread,boardRepository,this);
-        downloadedBoardInteractor=new ShowDownloadedBoardInteractorImpl(mExecutor,mMainThread,boardRepository,this);
+
         //不用execute()
     }
 
@@ -128,21 +126,7 @@ public class BoardDownLoaderPresenterImpl extends AbstractPresenter implements B
         Log.i("可下载的板子", "onShowDownloadableBoards: " + boards.toString());
         view.onShowDownloadableBoardList(boards);
     }
-    //////////////////////////////////////////////////////////
-    @Override
-    public void onDeleteBoard(String boardName) {
-        view.onViewDeleteBoard(boardName);
-    }
 
-    @Override
-    public void onNoDownloadedBoard() {
-        view.onViewNoDownloadedBoard();
-    }
-
-    @Override
-    public void onshowDownloadedBoards(List<BoardBeanModelImpl> boards) {
-        view.onViewshowDownloadedBoards(boards);
-    }
 
     ////////////////////////////////////////////////////////
     @Override

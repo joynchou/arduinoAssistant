@@ -69,7 +69,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
         ButterKnife.bind(this);
         initPresenter();
         initToorbor();
-        intent = new Intent(HardWareInfoActivity.this, BoardDownloader.class);
+        intent = new Intent(HardWareInfoActivity.this, BoardManagerActivity.class);
         recyclerView = findViewById(R.id.RecyclerView);
         progressBar = findViewById(R.id.progressBar);
         info = findViewById(R.id.info_text);
@@ -78,12 +78,12 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
 
 
         ViewPager viewPager = findViewById(R.id.viewPager);
-        if (viewPager != null) {
-            setupViewPager(viewPager);
-        } else {
-            Log.w("viwepager", "onCreate: " + "viewpager is null");
-            showInfo("onCreate: " + "viewpager is null");
-        }
+//        if (viewPager != null) {
+//            setupViewPager(viewPager);
+//        } else {
+//            Log.w("viwepager", "onCreate: " + "viewpager is null");
+//            showInfo("onCreate: " + "viewpager is null");
+//        }
 
         mainPresenter.resume();
     }
@@ -133,7 +133,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
             case R.id.homeAsUp:
                 break;
             case R.id.menu_downloader:
-                Intent intent = new Intent(HardWareInfoActivity.this, BoardDownloader.class);
+                Intent intent = new Intent(HardWareInfoActivity.this, BoardManagerActivity.class);
                 startActivity(intent);
                 break;
 

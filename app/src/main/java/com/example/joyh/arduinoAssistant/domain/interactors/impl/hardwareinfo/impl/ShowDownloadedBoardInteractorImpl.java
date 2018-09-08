@@ -29,7 +29,7 @@ public class ShowDownloadedBoardInteractorImpl extends AbstractInteractor implem
 
     @Override
     public void run() {
-
+        showDownloadedBoards();
     }
 
 
@@ -39,8 +39,15 @@ public class ShowDownloadedBoardInteractorImpl extends AbstractInteractor implem
     }
 
     @Override
-    public List<BoardBeanModelImpl> showDownloadedBoards() {
-        return null;
+    public void showDownloadedBoards() {
+        mMainThread.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onshowDownloadedBoards(boardRepository.getAvailableBoards());
+            }
+        });
+
+
     }
 
     @Override
