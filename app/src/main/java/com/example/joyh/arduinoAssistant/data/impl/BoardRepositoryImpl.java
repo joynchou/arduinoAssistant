@@ -115,6 +115,38 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public void deleteBoardResource(String boardName) {
 
+        String deletePath=boardDownloadDeletePath(boardName);
+        String TAG="deleteboard";
+        //File deleteFile=new File(deletePath);
+        File zipFile = new File(this.boardDownloadSavePath(boardName));
+        File jpgFile =new File(this.boardImgDownloadSavePath(boardName));
+        if(zipFile.exists()){
+            if(jpgFile.exists()){
+                if(zipFile.delete()){
+                    Log.i(TAG, "zipfile:"+zipFile.toString()+"has been deleted");
+                }
+                else{
+                    Log.w(TAG, "zipfile:"+zipFile.toString()+"doesn't been deleted" );
+                    callback.onError("zipfile:"+zipFile.toString()+"doesn't been deleted");
+                }
+                if(jpgFile.delete()){
+                    Log.i(TAG, "jpgFile:"+jpgFile.toString()+"has been deleted");
+                }
+                else{
+                    Log.w(TAG, "jpgFile:"+jpgFile.toString()+"doesn't been deleted" );
+                    callback.onError("jpgFile:"+jpgFile.toString()+"doesn't been deleted");
+                }
+
+            }
+
+            else{
+                Log.w(TAG, "jpgfile:"+jpgFile.toString()+"doesn't exists" );
+            }
+        }
+        else{
+            Log.w(TAG, "zipfile:"+zipFile.toString()+"doesn't exists" );
+        }
+
     }
 
     @Override
@@ -407,6 +439,8 @@ public class BoardRepositoryImpl implements BoardRepository {
                 + "ArduinoResource"
                 + File.separator
                 + "boardResource"
+                +File.separator
+                +toDeletedBoardName;
 
         ;
         return path;

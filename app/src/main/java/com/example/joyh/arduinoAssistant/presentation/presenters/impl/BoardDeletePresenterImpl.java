@@ -3,7 +3,9 @@ package com.example.joyh.arduinoAssistant.presentation.presenters.impl;
 import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DeleteDownloadedBoard;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowDownloadedBoardInteractor;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DeleteDownloadedBoardInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowDownloadedBoardInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
 import com.example.joyh.arduinoAssistant.presentation.presenters.BoardDeletePresenter;
@@ -16,9 +18,11 @@ import java.util.List;
  */
 
 public class BoardDeletePresenterImpl extends AbstractPresenter implements BoardDeletePresenter ,
-        ShowDownloadedBoardInteractor.Callback{
+        ShowDownloadedBoardInteractor.Callback,
+        DeleteDownloadedBoard.Callback{
 
     private ShowDownloadedBoardInteractorImpl downloadedBoardInteractor;
+    private DeleteDownloadedBoardInteractorImpl deleteDownloadedBoardInteractor;
     private BoardRepositoryImpl boardRepository;
     private BoardDeletePresenter.View view;
 
@@ -32,6 +36,7 @@ public class BoardDeletePresenterImpl extends AbstractPresenter implements Board
 
         downloadedBoardInteractor=new ShowDownloadedBoardInteractorImpl(mExecutor,mMainThread,boardRepository,this);
         downloadedBoardInteractor.execute();
+        deleteDownloadedBoardInteractor=new DeleteDownloadedBoardInteractorImpl(mExecutor,mMainThread,boardRepository,this);
     }
 
     @Override
@@ -54,6 +59,17 @@ public class BoardDeletePresenterImpl extends AbstractPresenter implements Board
 
     }
 
+    @Override
+    public void onBoardDeleted(final String boardName) {
+        mMainThread.post(new Runnable() {
+            @Override
+            public void run() {
+                view.onViewDeleteBoard(boardName);
+            }
+        });
+
+    }
+
     //////////////////////////////////////////////////////////
     @Override
     public void onDeleteBoard(String boardName) {
@@ -72,6 +88,6 @@ public class BoardDeletePresenterImpl extends AbstractPresenter implements Board
 
     @Override
     public void deleteBoard(String name) {
-
+        deleteDownloadedBoardInteractor.deleteBoard(name);
     }
 }

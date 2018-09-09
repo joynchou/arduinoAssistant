@@ -31,18 +31,23 @@ public class DownloadedRecyclerViewAdapter extends RecyclerView.Adapter<Download
     private List<String> boardName;
     private List<String> boardImage;
     private List<String> content;
+
     private MainThread mainThread;
     private Context context;
     private BoardRepositoryImpl boardRepository;
     private int sysVersion = Integer.parseInt(Build.VERSION.SDK);
+    private Callback callback;
+    public interface Callback{
+        void onDeleteClicked(String name);
+    }
 
-
-    public DownloadedRecyclerViewAdapter(List<String> boardName, List<String> boardImage, List<String> content, BoardRepositoryImpl boardRepository) {
+    public DownloadedRecyclerViewAdapter(List<String> boardName, List<String> boardImage, List<String> content, BoardRepositoryImpl boardRepository,Callback callback) {
         this.boardName = boardName;
         this.boardImage = boardImage;
         this.content = content;
         this.boardRepository = boardRepository;
         mainThread = MainThreadImpl.getInstance();
+        this.callback=callback;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -78,6 +83,8 @@ public class DownloadedRecyclerViewAdapter extends RecyclerView.Adapter<Download
             @Override
             public void onClick(View v) {
                 Log.i("delete", "onClick: "+position);
+                callback.onDeleteClicked(boardName.get(position));
+
             }
         });
 
@@ -97,5 +104,27 @@ public class DownloadedRecyclerViewAdapter extends RecyclerView.Adapter<Download
     @Override
     public int getItemCount() {
         return boardName.size();
+    }
+
+    public void deleteBoard(String name){
+
+        final int realPosition = this.boardName.indexOf(name);
+        if (realPosition != -1) {
+            Log.i("deleteItem", "element:" + realPosition+" boardName:"+name);
+            this.boardName.remove(realPosition);
+            this.boardImage.remove(realPosition);
+            this.content.remove(realPosition);
+
+            mainThread.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemRemoved(realPosition);
+                    notifyItemRangeChanged(realPosition, boardName.size() - realPosition);
+                }
+            });
+        } else {
+            Log.w("deleteItem", "no such element:" + boardName);
+        }
+
     }
 }

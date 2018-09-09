@@ -296,6 +296,6 @@ public class DownloadableBoardFragment extends Fragment implements
     }
     //以下为自定义私有方法
     private void showInfo(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

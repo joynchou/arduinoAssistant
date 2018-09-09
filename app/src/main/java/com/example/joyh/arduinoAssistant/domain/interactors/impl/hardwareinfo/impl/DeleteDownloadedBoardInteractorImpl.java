@@ -16,6 +16,7 @@ public class DeleteDownloadedBoardInteractorImpl extends AbstractInteractor impl
 
     private BoardRepository boardRepository;
     private DeleteDownloadedBoard.Callback callback;
+    private String deleteBoard;
 
     public DeleteDownloadedBoardInteractorImpl(Executor threadExecutor, MainThread mainThread, BoardRepository boardRepository, Callback callback) {
         super(threadExecutor, mainThread);
@@ -27,7 +28,15 @@ public class DeleteDownloadedBoardInteractorImpl extends AbstractInteractor impl
     public void run() {
 
 
+        boardRepository.deleteBoardResource(deleteBoard);
+        callback.onBoardDeleted(deleteBoard);
     }
 
 
+    @Override
+    public void deleteBoard(String name) {
+        this.deleteBoard=name;
+        execute();
+
+    }
 }

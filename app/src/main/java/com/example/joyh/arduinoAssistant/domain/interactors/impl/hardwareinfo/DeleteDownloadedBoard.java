@@ -12,4 +12,5 @@ public interface DeleteDownloadedBoard extends Interactor {
         void onError(String error);
         void onBoardDeleted(String boardName);
     }
+    void deleteBoard(String name);
 }

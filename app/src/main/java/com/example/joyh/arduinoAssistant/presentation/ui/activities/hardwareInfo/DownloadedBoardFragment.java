@@ -32,7 +32,8 @@ import java.util.List;
  */
 
 public class DownloadedBoardFragment extends Fragment implements BoardDeletePresenter.View,
-        BoardRepository.Callback {
+        BoardRepository.Callback,
+        DownloadedRecyclerViewAdapter.Callback{
 
     private BoardDeletePresenter mainPresenter;
     private MainThread mainThread;
@@ -60,6 +61,7 @@ public class DownloadedBoardFragment extends Fragment implements BoardDeletePres
     @Override
     public void onViewDeleteBoard(String boardName) {
 
+        recyclerViewAdapter.deleteBoard(boardName);
     }
 
     @Override
@@ -89,7 +91,7 @@ public class DownloadedBoardFragment extends Fragment implements BoardDeletePres
 
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerViewAdapter = new DownloadedRecyclerViewAdapter(boardname,imgURL,content,boardRepository);
+        recyclerViewAdapter = new DownloadedRecyclerViewAdapter(boardname,imgURL,content,boardRepository,this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
     }
@@ -110,6 +112,11 @@ public class DownloadedBoardFragment extends Fragment implements BoardDeletePres
     @Override
     public void onError(String error) {
         showInfo(error);
+    }
+
+    @Override
+    public void onDeleteClicked(String name) {
+        mainPresenter.deleteBoard(name);
     }
 
     private void initPresenter() {
