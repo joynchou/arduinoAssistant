@@ -6,7 +6,7 @@
 
 #### 介绍
 
-来自一个普通学生的远大幻象，打造一款Arduino辅助app，并能够帮助其他人顺利的playArduino
+来自一个普通学生的远大幻想，打造一款Arduino辅助app，并能够帮助其他人顺利的playArduino
 
 ---
 
@@ -42,7 +42,10 @@
 ##### 效果图（真机截图）
   ![image](https://github.com/joynchou/arduinoAssistent/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/%E6%A0%BC%E5%BC%8F%E5%B7%A5%E5%8E%82Screenshot_20180901-102307.jpg) ![image](https://github.com/joynchou/arduinoAssistent/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/%E6%A0%BC%E5%BC%8F%E5%B7%A5%E5%8E%82Screenshot_20180901-102316.jpg)
   ![image](https://github.com/joynchou/arduinoAssistent/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/%E6%A0%BC%E5%BC%8F%E5%B7%A5%E5%8E%82Screenshot_20180901-102326.jpg)
-  
+   ![image](https://github.com/joynchou/arduinoAssistant/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/device-2018-09-08-175108.png)
+   
+   ![image](https://github.com/joynchou/arduinoAssistant/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/device-2018-09-08-175046.png)
+   ![image](https://github.com/joynchou/arduinoAssistant/blob/master/res/%E6%95%88%E6%9E%9C%E5%9B%BE%EF%BC%88%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%EF%BC%89/device-2018-09-08-174940.png)
 #### 使用
  将此项目下载后可以进行编译，也可以直接下载res文件夹中的apk文件进行安装预览。
  
