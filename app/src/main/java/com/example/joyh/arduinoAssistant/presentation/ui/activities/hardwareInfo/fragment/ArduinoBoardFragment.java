@@ -1,4 +1,4 @@
-package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo;
+package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.joyh.arduinoAssistant.R;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ import java.util.List;
 public class ArduinoBoardFragment extends Fragment {
 
 
-private List<BoardBeanModelImpl> list;
+private List<BoardBeanModel> list;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

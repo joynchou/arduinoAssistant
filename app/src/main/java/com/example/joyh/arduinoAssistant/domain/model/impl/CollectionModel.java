@@ -1,11 +1,13 @@
 package com.example.joyh.arduinoAssistant.domain.model.impl;
 
+import java.io.Serializable;
+
 /**
  * Created by joyn on 2018/9/5 0005.
- * 收藏项目的bean对象
+ * 收藏项目的bean对象，保存了可收藏项目信息
  */
 
-public class CollectionModel {
+public class CollectionModel implements Serializable {
     /**
      * 收藏对象的名字
      */
@@ -52,10 +54,13 @@ public class CollectionModel {
         this.state = state;
     }
 
+
     @Override
     public String toString() {
         return "CollectionModel{" +
                 "name='" + name + '\'' +
+                ", type=" + type +
+                ", state=" + state +
                 '}';
     }
 

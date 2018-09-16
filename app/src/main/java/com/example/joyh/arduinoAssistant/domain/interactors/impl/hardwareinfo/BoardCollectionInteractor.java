@@ -5,6 +5,8 @@ import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 
 /**
  * Created by joyn on 2018/9/3 0003.
+ * 用例：收藏板子
+ * 由用户触发
  */
 
 public interface BoardCollectionInteractor extends Interactor {
@@ -13,7 +15,7 @@ public interface BoardCollectionInteractor extends Interactor {
          * 错误回调函数
          * @param error 错误信息
          */
-        void oneError(String error);
+        void onError(String error);
 
         /**
          * 收藏状态改变回调函数
@@ -23,4 +25,5 @@ public interface BoardCollectionInteractor extends Interactor {
     }
     void usecaseChangCollectionState(CollectionModel collectionModel, boolean state);
     void usecaseStarButtonClicked(String boardName);
+
 }

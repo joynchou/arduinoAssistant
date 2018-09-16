@@ -16,6 +16,7 @@ public interface DownloadBoardResourceInteractor extends Interactor {
     int DOWNLOAD_STATE_FINISH = 3;//下载完成
     int DOWNLOAD_STATE_RESUME = 4;//下载继续
     int DOWNLOAD_STATE_RETRY = 5;//失败重试
+
     interface Callback{
         void onBoardDownloadProgressChange(String boardName,int listPositon,int progress);
         void onBoardDownloadFailed(String boardName,int listPositon,String error);
@@ -27,6 +28,7 @@ public interface DownloadBoardResourceInteractor extends Interactor {
         //在presentition层实现，presentition层再让其他层实现
         void onDownloadResource(String URL,String name,int position);
         void onDownloadBoardResourceInteractorError(String error);
+        void onShowBoardResource(String boardName);
     }
     void downloadBoardByName(String name,int position,int downloadState);
 

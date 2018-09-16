@@ -9,6 +9,8 @@ import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 
 /**
  * Created by joyn on 2018/9/3 0003.
+ * 用例：删除已下载的板子
+ * Interactor :delete already downloaded board
  */
 
 public class DeleteDownloadedBoardInteractorImpl extends AbstractInteractor implements DeleteDownloadedBoard {

@@ -8,7 +8,7 @@
 
     <item
         android2:id="@+id/menu_downloader"
-        android2:checkable="true"
+        android2:checkable="false"
         android2:icon="@drawable/ic_download"
         android2:title="下载管理"
         android:showAsAction="ifRoom" />
@@ -21,6 +21,6 @@
         android2:icon="@drawable/ic_search_black_24dp"
         android2:title="搜索"
         
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 </menu>

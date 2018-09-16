@@ -9,9 +9,6 @@ import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractInterac
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoInteractor;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 import com.example.joyh.arduinoAssistant.domain.repository.MessageRepository;
-
-
-
 /**
  * Created by joyn on 2018/8/21 0021.
  * 用例：硬件查询模块主interactor，

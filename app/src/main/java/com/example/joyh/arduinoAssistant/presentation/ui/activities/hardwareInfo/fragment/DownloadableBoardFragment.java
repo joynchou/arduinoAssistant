@@ -1,6 +1,7 @@
-package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo;
+package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.fragment;
 
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.joyh.arduinoAssistant.R;
@@ -21,12 +23,16 @@ import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.executor.impl.ThreadExecutor;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 import com.example.joyh.arduinoAssistant.presentation.network.FileDownloader;
 import com.example.joyh.arduinoAssistant.presentation.network.FileDownloaderInterface;
 import com.example.joyh.arduinoAssistant.presentation.presenters.BoardDownloaderPresenter;
 import com.example.joyh.arduinoAssistant.presentation.presenters.impl.BoardDownLoaderPresenterImpl;
+import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.BoardDetailActivity;
+import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.BoardManagerActivity;
+import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.DownloadableRecyclerViewAdapter;
+import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.DownloadableRecyclerViewAdapterInterface;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 
@@ -54,8 +60,7 @@ public class DownloadableBoardFragment extends Fragment implements
     private RecyclerView recyclerView;
     private int sysVersion = Integer.parseInt(Build.VERSION.SDK);
     private DownloadableRecyclerViewAdapter recyclerViewAdapter;
-
-
+    private ProgressBar progressBar;
 
 
 
@@ -66,15 +71,20 @@ public class DownloadableBoardFragment extends Fragment implements
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mainPresenter.resume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        MainThread mainThread = MainThreadImpl.getInstance();
         View view;
         view =  inflater.inflate(R.layout.fragment_downloadable_board, container, false);
-        setupRecyclerView(recyclerView);
         recyclerView=view.findViewById(R.id.downloadable_recyclerView);
+        progressBar=view.findViewById(R.id.progressBar);
         return view;
     }
 
@@ -96,16 +106,16 @@ public class DownloadableBoardFragment extends Fragment implements
 
     @Override
     public void showProgress() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onError(String error) {
-        
+        showError(error);
     }
 
     @Override
-    public void onShowDownloadableBoardList(List<BoardBeanModelImpl> boards) {
+    public void onShowDownloadableBoardList(List<BoardBeanModel> boards) {
 
         List<String> imgURL = new ArrayList<>();
         List<String> boardname = new ArrayList<>();
@@ -137,13 +147,22 @@ public class DownloadableBoardFragment extends Fragment implements
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
     }
+
+    @Override
+    public void onViewShowBoardResource(String boardName) {
+        Intent intent=new Intent(getActivity(), BoardDetailActivity.class);
+        intent.putExtra("com.example.joyn.arduinoAssistant:boardname",boardName);
+        startActivity(intent);
+    }
+
     @Override
     public void hideProgress() {
-
+        progressBar.setVisibility(View.INVISIBLE);
     }
     @Override
     public void showError(String message) {
 
+        this.showInfo(message);
     }
     @Override
     public void onProgressBarChanged(String boardName, int listPositon, int progress) {
@@ -153,18 +172,24 @@ public class DownloadableBoardFragment extends Fragment implements
 
     @Override
     public void onBoardDownloadFailed(String boardName, int listPositon, String error) {
-        Log.i("download", "failed ");
+        Log.i("download failed", error);
         if (recyclerViewAdapter != null)
             recyclerViewAdapter.onBoardDownloadFailed(boardName, listPositon);
         showInfo(boardName + "下载失败," + error);
     }
 
     @Override
-    public void onBoardDownloadFinish(String boardName, int listPositon) {
+    public void onBoardDownloadFinish(final String boardName, int listPositon) {
         Log.i("download", "finish");
         if (recyclerViewAdapter != null)
             recyclerViewAdapter.onBoardDownloadFinish(boardName, listPositon);
-        showInfo(boardName + "下载完成");
+        mainThread.post(new Runnable() {
+            @Override
+            public void run() {
+                showInfo(boardName + "下载完成");
+            }
+        });
+
     }
 
     @Override
@@ -217,11 +242,17 @@ public class DownloadableBoardFragment extends Fragment implements
         int downloadId;
         String defaultRootPath =
                 Environment.getExternalStorageDirectory().getPath();
-
+        String type="";
+        if(URL.contains("zip")){
+           type="zip";
+        }
+        else if(URL.contains("pdf")){
+            type="pdf";
+        }
         FileDownloader fileDownloader = new FileDownloader
                 (
                         URL,
-                        boardRepository.boardDownloadSavePath(name),
+                        boardRepository.boardDownloadSavePath(name,type),
                         getContext(),
                         defaultRootPath,
                         this
@@ -281,10 +312,7 @@ public class DownloadableBoardFragment extends Fragment implements
         mainPresenter.warn(name, task.getId());
     }
     
-    private void setupRecyclerView(RecyclerView recyclerView) {
 
-
-    }
 
     private void initPresenter() {
         Executor executor = ThreadExecutor.getInstance();
@@ -296,6 +324,6 @@ public class DownloadableBoardFragment extends Fragment implements
     }
     //以下为自定义私有方法
     private void showInfo(String message) {
-       // Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

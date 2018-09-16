@@ -1,4 +1,4 @@
-package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo;
+package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -37,6 +37,7 @@ public class DownloadedRecyclerViewAdapter extends RecyclerView.Adapter<Download
     private BoardRepositoryImpl boardRepository;
     private int sysVersion = Integer.parseInt(Build.VERSION.SDK);
     private Callback callback;
+
     public interface Callback{
         void onDeleteClicked(String name);
     }

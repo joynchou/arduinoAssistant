@@ -1,8 +1,9 @@
-package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo;
+package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +15,8 @@ import android.widget.TextView;
 
 import com.example.joyh.arduinoAssistant.R;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
-import com.example.joyh.arduinoAssistant.domain.model.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,12 +58,14 @@ public class AvailableBoardsRecyclerViewAdapter extends RecyclerView.Adapter<Ava
         private ImageView boardImg;
         private TextView boardName;
         private ImageButton starButton;
+        private CardView cardView;
 
         public viewHolder(View itemView) {
             super(itemView);
             boardImg = itemView.findViewById(R.id.backgroundImage);
             boardName = itemView.findViewById(R.id.title);
             starButton=itemView.findViewById(R.id.btn_star);
+            cardView=itemView.findViewById(R.id.cardview);
         }
     }
 
@@ -99,6 +100,14 @@ public class AvailableBoardsRecyclerViewAdapter extends RecyclerView.Adapter<Ava
         else{
             holder.starButton.setImageResource(R.drawable.ic_unstar);
         }
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.onCardClicked(boardNameList.get(position));
+            }
+        });
+
 
 
 

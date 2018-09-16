@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.BoardCollectionInteractor;
-import com.example.joyh.arduinoAssistant.domain.model.BoardBeanModel;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 
@@ -18,6 +16,8 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -30,7 +30,6 @@ public class BoardRepositoryImpl implements BoardRepository {
 
     private Context context;
     private BoardRepository.Callback callback;
-    private int availableBoardAmount;
 
     public BoardRepositoryImpl(Context context, BoardRepository.Callback callback) {
         this.context = context;
@@ -44,47 +43,45 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public List<BoardBeanModelImpl> getAvailableBoards() {
+    public List<BoardBeanModel> getAvailableBoards() {
 
-        int amount=0;
-        List<String> boardName=this.getDownloadableBoardName(ENTRY_LEVEL);
-        List<BoardBeanModelImpl> availableBoards=new ArrayList<>();
-        BoardBeanModelImpl singleBoard;
-        String TAG="file";
+        int amount = 0;
+        List<String> boardName = this.getDownloadableBoardName(ENTRY_LEVEL);
+        boardName.addAll(this.getDownloadableBoardName(ENHANCED_FEATURES));
+        boardName.addAll(this.getDownloadableBoardName(RETIRED));
+        List<BoardBeanModel> availableBoards = new ArrayList<>();
+        BoardBeanModel singleBoard;
+        String TAG = "file";
 
-        for(int i=0;i<boardName.size();i++) {
-            File zipFile = new File(this.boardDownloadSavePath(boardName.get(i)));
-            File jpgFile =new File(this.boardImgDownloadSavePath(boardName.get(i)));
-            if(zipFile.exists()){
-                if(jpgFile.exists()){
-                    singleBoard=new BoardBeanModelImpl();
+        for (int i = 0; i < boardName.size(); i++) {
+            File zipFile = new File(this.boardDownloadSavePath(boardName.get(i), "zip"));
+            File jpgFile = new File(this.boardImgDownloadSavePath(boardName.get(i)));
+            if (zipFile.exists()) {
+                if (jpgFile.exists()) {
+                    singleBoard = new BoardBeanModel();
                     singleBoard.setBoardName(boardName.get(i));
                     singleBoard.setPicPath(jpgFile.toString());
                     availableBoards.add(singleBoard);
 
+                } else {
+                    Log.w(TAG, jpgFile.toString() + "is not exists");
                 }
-                else{
-                    Log.w(TAG, jpgFile.toString()+"is not exists" );
-                }
-            }
-            else{
-                Log.w(TAG, zipFile.toString()+"is not exists" );
+            } else {
+                Log.w(TAG, zipFile.toString() + "is not exists");
             }
         }
 
 
-
-        this.availableBoardAmount=amount;
         return availableBoards;
     }
 
     @Override
-    public List<BoardBeanModelImpl> getDownloadableBoards() {
+    public List<BoardBeanModel> getDownloadableBoards() {
         //所有板子
-        List<BoardBeanModelImpl> allBoardList =new ArrayList<>();
+        List<BoardBeanModel> allBoardList = new ArrayList<>();
         //取得已经下载的板子
-        List<BoardBeanModelImpl> downloadedBoardList =this.getAvailableBoards();
-        List<BoardBeanModelImpl> downloadableBoardList=new ArrayList<>();
+        List<BoardBeanModel> downloadedBoardList = this.getAvailableBoards();
+        List<BoardBeanModel> downloadableBoardList = new ArrayList<>();
         List<String> boardName;
         List<String> boardURL;
 
@@ -92,10 +89,10 @@ public class BoardRepositoryImpl implements BoardRepository {
         boardURL = this.getDownloadableBoardImgURL(BoardRepository.ENTRY_LEVEL);
         boardName.addAll(this.getDownloadableBoardName(BoardRepository.ENHANCED_FEATURES));
         boardURL.addAll(this.getDownloadableBoardImgURL(BoardRepository.ENHANCED_FEATURES));
-//        boardName.addAll(this.getDownloadableBoardName(BoardRepository.RETIRED));
-//        boardURL.addAll(this.getDownloadableBoardImgURL(BoardRepository.RETIRED));
+        boardName.addAll(this.getDownloadableBoardName(BoardRepository.RETIRED));
+        boardURL.addAll(this.getDownloadableBoardImgURL(BoardRepository.RETIRED));
         for (int i = 0; i < boardName.size(); i++) {
-            BoardBeanModelImpl board = new BoardBeanModelImpl();
+            BoardBeanModel board = new BoardBeanModel();
             board.setBoardName(boardName.get(i));
             board.setPicURL(boardURL.get(i));
             allBoardList.add(board);
@@ -103,7 +100,7 @@ public class BoardRepositoryImpl implements BoardRepository {
         }
 
         allBoardList.removeAll(downloadedBoardList);
-        downloadableBoardList=allBoardList;
+        downloadableBoardList = allBoardList;
         return downloadableBoardList;
     }
 
@@ -115,36 +112,33 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public void deleteBoardResource(String boardName) {
 
-        String deletePath=boardDownloadDeletePath(boardName);
-        String TAG="deleteboard";
+
+        String TAG = "deleteboard";
         //File deleteFile=new File(deletePath);
-        File zipFile = new File(this.boardDownloadSavePath(boardName));
-        File jpgFile =new File(this.boardImgDownloadSavePath(boardName));
-        if(zipFile.exists()){
-            if(jpgFile.exists()){
-                if(zipFile.delete()){
-                    Log.i(TAG, "zipfile:"+zipFile.toString()+"has been deleted");
+        File zipFile = new File(this.boardDownloadSavePath(boardName, "zip"));
+        File jpgFile = new File(this.boardImgDownloadSavePath(boardName));
+        if (zipFile.exists()) {
+            if (jpgFile.exists()) {
+                if (zipFile.delete()) {
+                    Log.i(TAG, "zipfile:" + zipFile.toString() + "has been deleted");
+                } else {
+                    Log.w(TAG, "zipfile:" + zipFile.toString() + "doesn't been deleted");
+                    callback.onError("zipfile:" + zipFile.toString() + "doesn't been deleted");
                 }
-                else{
-                    Log.w(TAG, "zipfile:"+zipFile.toString()+"doesn't been deleted" );
-                    callback.onError("zipfile:"+zipFile.toString()+"doesn't been deleted");
-                }
-                if(jpgFile.delete()){
-                    Log.i(TAG, "jpgFile:"+jpgFile.toString()+"has been deleted");
-                }
-                else{
-                    Log.w(TAG, "jpgFile:"+jpgFile.toString()+"doesn't been deleted" );
-                    callback.onError("jpgFile:"+jpgFile.toString()+"doesn't been deleted");
+                if (jpgFile.delete()) {
+                    Log.i(TAG, "jpgFile:" + jpgFile.toString() + "has been deleted");
+                } else {
+                    Log.w(TAG, "jpgFile:" + jpgFile.toString() + "doesn't been deleted");
+                    callback.onError("jpgFile:" + jpgFile.toString() + "doesn't been deleted");
                 }
 
-            }
+            } else {
+                Log.w(TAG, "jpgfile:" + jpgFile.toString() + "doesn't exists");
 
-            else{
-                Log.w(TAG, "jpgfile:"+jpgFile.toString()+"doesn't exists" );
             }
-        }
-        else{
-            Log.w(TAG, "zipfile:"+zipFile.toString()+"doesn't exists" );
+        } else {
+            Log.w(TAG, "zipfile:" + zipFile.toString() + "doesn't exists");
+
         }
 
     }
@@ -156,10 +150,57 @@ public class BoardRepositoryImpl implements BoardRepository {
 
     @Override
     public void changeCollectionState(CollectionModel model, boolean state) {
-        ACache cache=ACache.get(context);
-        String tag=model.getName()+model.getType();
-        cache.put(tag,state);
+        ACache cache = ACache.get(context);
+        LinkedHashMap<Integer, List<CollectionModel>> cacheMap;
+        List<CollectionModel> cacheList;
+        String oldCacheKey = model.getName() + model.getType();
+        String cacheKey = "CollectionState";
+        String logTag = "changeCollectionState";
 
+        cacheMap = (LinkedHashMap<Integer, List<CollectionModel>>) cache.getAsObject(cacheKey);
+        //如果有缓存
+        if (cacheMap != null) {
+            Log.i(logTag, "有 " + cacheKey + "的缓存");
+            int positionOfModel;
+            cacheList = cacheMap.get(model.getType());
+            if (cacheList != null) {
+                CollectionModel modelToSave = new CollectionModel();
+                modelToSave.setName(model.getName());
+                modelToSave.setType(model.getType());
+                modelToSave.setState(state);
+                positionOfModel = cacheList.indexOf(modelToSave);
+
+                if (positionOfModel != -1) {
+
+                    cacheList.set(positionOfModel, modelToSave);
+                    Log.i(logTag, "hashmap内容：" + cacheMap);
+                } else {
+                    Log.i(logTag, "没有" + model.getName() + "的缓存存在，即将创建");
+                    CollectionModel model1 = new CollectionModel();
+                    model1.setName(model.getName());
+                    model1.setType(model.getType());
+                    model1.setState(state);
+                    cacheList.add(model1);
+                    Log.i(logTag, "hashmap内容：" + cacheMap);
+                }
+                cacheMap.put(model.getType(), cacheList);
+                cache.put(cacheKey, cacheMap);
+            } else {
+
+            }
+
+        } else {
+            Log.i(logTag, "没有 " + cacheKey + "的缓存");
+            cacheMap = new LinkedHashMap<>();
+            List<CollectionModel> collectionModelList1 = new ArrayList<>();
+            collectionModelList1.add(model);
+            cacheMap.put(model.getType(), collectionModelList1);
+            cache.put(cacheKey, cacheMap);
+        }
+
+
+        cache.put(cacheKey, cacheMap);
+        cache.put(oldCacheKey, state);
 
 
     }
@@ -167,23 +208,54 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public boolean getCollectionState(CollectionModel model) {
         ACache cache = ACache.get(context);
-        String tag=model.getName()+model.getType();
-        Boolean state=(Boolean) cache.getAsObject(tag);
+        String tag = model.getName() + model.getType();
+        Boolean state = (Boolean) cache.getAsObject(tag);
 
         //TODO: 存储收藏状态信息
         //如果已经有缓存
-        if(state!=null){
-            Log.i("缓存", "已有"+tag+"的缓存存在");
+        if (state != null) {
+            Log.i("缓存", "已有" + tag + "的缓存存在");
             return state;
         }
         //没有缓存
-        else{
-            Log.i("缓存", "没有"+tag+"的缓存存在");
-            state=false;
-            cache.put(tag,state);
+        else {
+            Log.i("缓存", "没有" + tag + "的缓存存在");
+            state = false;
+            cache.put(tag, state);
 
         }
         return state;
+    }
+
+    //TODO：这个方法可能没有用处
+    @Override
+    public void storeCollectionList(List<CollectionModel> stringList) {
+        ACache cache = ACache.get(context);
+        String tab = "CollectionState";
+        HashMap<Integer, List<CollectionModel>> stringListHashMap = new LinkedHashMap<>();
+        stringListHashMap.put(stringList.get(0).getType(), stringList);
+
+        cache.put(tab, stringListHashMap);
+    }
+
+    @Override
+    public List<CollectionModel> getCollectionStateList(int type) {
+        ACache cache = ACache.get(context);
+        String tag = "CollectionState";
+        String logTag = "getCollectionStateList";
+        List<CollectionModel> stringList;
+        LinkedHashMap<Integer, List<CollectionModel>> stringListMap;
+        stringListMap = (LinkedHashMap<Integer, List<CollectionModel>>) cache.getAsObject(tag);
+
+        if (stringListMap != null) {
+            stringList = stringListMap.get(type);
+
+        } else {
+            Log.w(logTag, "this  cache" + tag + "doesn't exist ");
+            stringList = null;
+        }
+
+        return stringList;
     }
 
     @Override
@@ -302,6 +374,7 @@ public class BoardRepositoryImpl implements BoardRepository {
         return boardImgURL;
 
     }
+
     //bug已修复
     @Override
     public String getBoardDetailURL(String boardName) {
@@ -310,34 +383,45 @@ public class BoardRepositoryImpl implements BoardRepository {
         String tag = boardName + "BoardDetailURL";
         String detailURL = cache.getAsString(tag);
         //如果已经存在缓存了
-        if (detailURL!=null && !detailURL.isEmpty()) {
+        if (detailURL != null && !detailURL.isEmpty()) {
             Log.i("缓存", "有" + tag + "的缓存存在");
-            detailURL=cache.getAsString(tag);
+            detailURL = cache.getAsString(tag);
         } else {
             Log.i("缓存", "没有" + tag + "的缓存存在");
             try {
                 detailURL = "";
                 Document doc = Jsoup.connect("https://www.arduino.cc/en/Main/Products").timeout(10000).get();
                 Element elements = doc.getElementById("entrylevel");
-                Elements titles = elements.getElementsByAttributeValue("class", "medium-6 medium-6 small-4 columns grid-img");
-                for (int i = 0; i < titles.size(); i++) {
-                    Elements imgURL = titles.get(i).getElementsByTag("span");
-                    //  System.out.println(imgURL.text());
-                    if (imgURL.text().equals(boardName)) {
-                        //System.out.println(titles.get(i));
-                        Element boardURL = titles.get(i);
-                        Elements URL = boardURL.getElementsByAttributeValue("class", "over-effect");
+                Element elements2 = doc.getElementById("enhancedfeatures");
+                Element elements3 = doc.getElementById("retired");
+                List<Element> elementList = new ArrayList<>();
+                elementList.add(elements);
+                elementList.add(elements2);
+                elementList.add(elements3);
+                for (int l = 0; l < 3; l++) {
+                    Elements titles = elementList.get(l).getElementsByAttributeValue("class", "medium-6 medium-6 small-4 columns grid-img");
+                    for (int i = 0; i < titles.size(); i++) {
+                        Elements imgURL = titles.get(i).getElementsByTag("span");
+                        //  System.out.println(imgURL.text());
+                        if (imgURL.text().equals(boardName)) {
+                            //System.out.println(titles.get(i));
+                            Element boardURL = titles.get(i);
+                            Elements URL = boardURL.getElementsByAttributeValue("class", "over-effect");
 
 
-                        detailURL = URL.attr("href");
-                        detailURL = "https://www.arduino.cc" + detailURL;
-                        System.out.println(detailURL);
-                        cache.put(tag, detailURL);
-                    } else {
+                            detailURL = URL.attr("href");
+                            detailURL = "https://www.arduino.cc" + detailURL;
+                            System.out.println(detailURL);
+                            cache.put(tag, detailURL);
+                            break;
+                        } else {
 
-                        //System.out.println("不匹配");
+                            //System.out.println("不匹配");
+                        }
                     }
+
                 }
+
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -372,6 +456,12 @@ public class BoardRepositoryImpl implements BoardRepository {
                     allresource.add(resource.attr("href"));
 
                 }
+                for (int i = 0; i < titles.size(); i++) {
+                    Elements resource = titles.get(i).getElementsByAttributeValue("class", "resource schematics");
+                    System.out.println(resource.attr("href"));
+                    allresource.add(resource.attr("href"));
+
+                }
 //
                 cache.put(tag, allresource);
             } catch (IOException e) {
@@ -396,7 +486,7 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public String boardDownloadSavePath(String toSavedBoardName) {
+    public String boardDownloadSavePath(String toSavedBoardName, String type) {
         String path;
         String defaultRootPath =
                 Environment.getExternalStorageDirectory().getPath();
@@ -409,9 +499,11 @@ public class BoardRepositoryImpl implements BoardRepository {
                 + toSavedBoardName
                 + File.separator
                 + toSavedBoardName
-                + ".zip";
+                + "." + type;
+
         return path;
     }
+
     public String boardImgDownloadSavePath(String toSavedBoardName) {
         String path;
         String defaultRootPath =
@@ -439,10 +531,25 @@ public class BoardRepositoryImpl implements BoardRepository {
                 + "ArduinoResource"
                 + File.separator
                 + "boardResource"
-                +File.separator
-                +toDeletedBoardName;
+                + File.separator
+                + toDeletedBoardName;
 
-        ;
+
         return path;
+    }
+
+    @Override
+    public String getBoardPDFUrl(String boardURL) {
+        return null;
+    }
+
+    @Override
+    public BoardBeanModel getBoardBean(String boardName) {
+        return null;
+    }
+
+    @Override
+    public void saveBoardBean(BoardBeanModel boardBeanModel) {
+
     }
 }

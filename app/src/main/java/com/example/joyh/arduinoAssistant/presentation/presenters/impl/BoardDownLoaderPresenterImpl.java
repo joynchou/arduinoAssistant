@@ -6,12 +6,10 @@ import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractor;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowDownloadedBoardInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DownloadBoardResourceInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowDownloadableBoardsInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowDownloadableBoardsInteractorImpl;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowDownloadedBoardInteractorImpl;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.presentation.presenters.BoardDownloaderPresenter;
 import com.example.joyh.arduinoAssistant.presentation.presenters.base.AbstractPresenter;
 
@@ -120,13 +118,17 @@ public class BoardDownLoaderPresenterImpl extends AbstractPresenter implements B
 
     //在板子下载器中显示可以下载的板子
     @Override
-    public void onShowDownloadableBoards(List<BoardBeanModelImpl> boards) {
+    public void onShowDownloadableBoards(List<BoardBeanModel> boards) {
 
         Log.i("list大小", "onShowDownloadableBoards: " + boards.size());
         Log.i("可下载的板子", "onShowDownloadableBoards: " + boards.toString());
         view.onShowDownloadableBoardList(boards);
     }
 
+    @Override
+    public void onShowBoardResource(String boardName) {
+        view.onViewShowBoardResource(boardName);
+    }
 
     ////////////////////////////////////////////////////////
     @Override

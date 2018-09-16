@@ -1,6 +1,6 @@
 package com.example.joyh.arduinoAssistant.presentation.presenters;
 
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.presentation.presenters.base.BasePresenter;
 import com.example.joyh.arduinoAssistant.presentation.ui.BaseView;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface BoardDownloaderPresenter extends BasePresenter {
     interface View extends BaseView {
-        void onShowDownloadableBoardList(List<BoardBeanModelImpl> boards);
+        void onShowDownloadableBoardList(List<BoardBeanModel> boards);
 
         void onProgressBarChanged(String boardName, int listPositon, int progress);
 
@@ -30,7 +30,7 @@ public interface BoardDownloaderPresenter extends BasePresenter {
 
         void onBoardDownloadStarted(String boardName, int listPosition);
 
-
+        void onViewShowBoardResource(String boardName);
     }
 
     void refresh();

@@ -4,7 +4,7 @@ import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowAvailableBoardsInteractor;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 
@@ -39,13 +39,20 @@ public class ShowAvailableBoardsInteractorImpl extends AbstractInteractor implem
 
     @Override
     public void run() {
+        UIshowProgressBar();
         if (boardRepository.getAvailableBoardAmount() != 0) {
-            UIshowProgressBar();
+
             showAvailableBoard();
-            UIhideProgressBar();
+
         }
+        UIhideProgressBar();
 
 
+    }
+
+    @Override
+    public void InteractorOpenBoardDetailList(BoardBeanModel board) {
+        callback.onOpenBoardDetailList(board);
     }
 
     @Override
@@ -73,7 +80,7 @@ public class ShowAvailableBoardsInteractorImpl extends AbstractInteractor implem
 
     private void UIshowAvailableBoards() {
         final List<Boolean> collectionState=new ArrayList<>();
-        final List<BoardBeanModelImpl> boardList=boardRepository.getAvailableBoards();
+        final List<BoardBeanModel> boardList=boardRepository.getAvailableBoards();
         List<String> boardName=new ArrayList<>();
         CollectionModel collectionModel=new CollectionModel();
 

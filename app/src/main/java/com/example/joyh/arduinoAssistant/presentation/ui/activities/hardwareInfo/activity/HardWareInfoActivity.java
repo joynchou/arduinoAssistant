@@ -1,11 +1,10 @@
-package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo;
+package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,24 +19,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aitangba.swipeback.SwipeBackActivity;
+import com.bumptech.glide.Glide;
 import com.example.joyh.arduinoAssistant.R;
 import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.executor.impl.ThreadExecutor;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 import com.example.joyh.arduinoAssistant.presentation.presenters.HardwareInfoPresenter;
 import com.example.joyh.arduinoAssistant.presentation.presenters.impl.HardwareInfoPresenterImpl;
-import com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo.ArduinoFragment;
-import com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo.TabFragmentPagerAdapter;
+import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.AvailableBoardsRecyclerViewAdapter;
+import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.AvailableBoardsRecyclerViewAdapterInterface;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 import com.githang.statusbar.StatusBarCompat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -50,8 +49,6 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     private HardwareInfoPresenter mainPresenter;
     private BoardRepositoryImpl boardRepository;
     private ProgressBar progressBar;
-    private FloatingActionButton floatingActionButton;
-    private ArduinoFragment arduinoFragment;
     private Intent intent;
     private TextView info;
     private RecyclerView recyclerView;
@@ -66,7 +63,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hardwareinfo);
-        ButterKnife.bind(this);
+        //ButterKnife.bind(this);
         initPresenter();
         initToorbor();
         intent = new Intent(HardWareInfoActivity.this, BoardManagerActivity.class);
@@ -91,6 +88,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     @Override
     protected void onResume() {
         super.onResume();
+        //mainPresenter.resume();
 
     }
 
@@ -142,6 +140,14 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     }
 
     //以下为presenter中的回调函数实现
+
+    @Override
+    public void onViewShowBoardDetailList(BoardBeanModel detailList) {
+        Intent intent=new Intent(HardWareInfoActivity.this,BoardDetailActivity.class);
+        intent.putExtra("com.example.joyn.arduinoAssistant:boardname",detailList.getBoardName());
+        startActivity(intent);
+    }
+
     @Override
     public void onShowNoAvailableBoard() {
         showInfo(getString(R.string.toast_no_availabel_board));
@@ -157,7 +163,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     }
 
     @Override
-    public void onShowBoards(List<BoardBeanModelImpl> boards,List<Boolean> collectionState ) {
+    public void onShowBoards(List<BoardBeanModel> boards, List<Boolean> collectionState ) {
         List<String> boardName = new ArrayList<>();
         List<String> boardImg = new ArrayList<>();
         for (int i = 0; i < boards.size(); i++) {
@@ -178,17 +184,24 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     }
 
     @Override
+    public void onCardClicked(String boardName) {
+        mainPresenter.presenterCardClicked(boardName);
+    }
+
+    @Override
     public void onViewChangeCollectionState(String boardName, boolean state) {
         recyclerViewAdapter.changBoardCollectionState(boardName, state);
     }
 
     @Override
     public void showProgress() {
+        recyclerView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
+        recyclerView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
     }
 
@@ -225,16 +238,5 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
         mainPresenter = new HardwareInfoPresenterImpl(executor, mainThread, boardRepository, this);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("test", 123);
 
-        ArduinoBoardFragment arduinoFragment = new ArduinoBoardFragment();
-        arduinoFragment.setArguments(bundle);
-
-        TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
-        //   adapter.addFragment(arduinoFragment, "Arduino开发板");
-        //adapter.addFragment(new ArduinoFragment(), "常用元件");
-        //   viewPager.setAdapter(adapter);
-    }
 }

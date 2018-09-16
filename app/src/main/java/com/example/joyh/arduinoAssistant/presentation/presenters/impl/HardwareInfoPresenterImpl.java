@@ -1,17 +1,17 @@
 package com.example.joyh.arduinoAssistant.presentation.presenters.impl;
 
 import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
-import com.example.joyh.arduinoAssistant.data.impl.MessageRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.BoardCollectionInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.HardwareInfoInteractor;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.BoardCollectionInteractorImlp;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.HardwareInfoInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowAvailableBoardsInteractor;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowBoardDetailListInteractor;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.BoardCollectionInteractorImpl;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.HardwareInfoInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowAvailableBoardsInteractorImpl;
-import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowDownloadableBoardsInteractorImpl;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowBoardDetailListInteractorImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 import com.example.joyh.arduinoAssistant.presentation.presenters.HardwareInfoPresenter;
 import com.example.joyh.arduinoAssistant.presentation.presenters.base.AbstractPresenter;
@@ -26,16 +26,23 @@ public class HardwareInfoPresenterImpl extends AbstractPresenter implements
         HardwareInfoPresenter,
         HardwareInfoInteractor.Callback,
         ShowAvailableBoardsInteractor.Callback,
-        BoardCollectionInteractor.Callback{
+        BoardCollectionInteractor.Callback {
 
     private HardwareInfoPresenter.View view;
     private BoardRepositoryImpl boardRepository;
     private HardwareInfoInteractorImpl infoInteractor;
     private ShowAvailableBoardsInteractorImpl infoShowAvailableBoardsInteractor;
-    private BoardCollectionInteractorImlp collectionInteractor;
-    public HardwareInfoPresenterImpl(Executor executor, MainThread mainThread, BoardRepositoryImpl boardRepository, View view) {
+    private BoardCollectionInteractorImpl collectionInteractor;
+
+
+    public HardwareInfoPresenterImpl(
+            Executor executor,
+            MainThread mainThread,
+            BoardRepositoryImpl boardRepository,
+            View view
+    ) {
         super(executor, mainThread);
-        this.boardRepository=boardRepository;
+        this.boardRepository = boardRepository;
         this.view = view;
 
     }
@@ -46,19 +53,22 @@ public class HardwareInfoPresenterImpl extends AbstractPresenter implements
     }
 
     @Override
-    public void oneError(String error) {
+    public void onError(String error) {
         view.showError(error);
     }
 
     @Override
     public void onCollectionStateChanged(CollectionModel model, boolean state) {
-        view.onViewChangeCollectionState(model.getName(),state);
+        view.onViewChangeCollectionState(model.getName(), state);
     }
+
+
+
 
     //在板子浏览界面中显示已下载可用的板子
     @Override
-    public void onAvailableBoard(List<BoardBeanModelImpl> boards,List<Boolean> collectionState ) {
-        view.onShowBoards(boards,collectionState);
+    public void onAvailableBoard(List<BoardBeanModel> boards, List<Boolean> collectionState) {
+        view.onShowBoards(boards, collectionState);
     }
 
     //显示没有已下载可用的板子的信息
@@ -70,6 +80,20 @@ public class HardwareInfoPresenterImpl extends AbstractPresenter implements
     @Override
     public void presenterStarButtonClicked(String boardName) {
         collectionInteractor.usecaseStarButtonClicked(boardName);
+    }
+
+    @Override
+    public void presenterCardClicked(String boardName) {
+        BoardBeanModel boardBeanModel=new BoardBeanModel();
+        boardBeanModel.setBoardName(boardName);
+
+
+        infoShowAvailableBoardsInteractor.InteractorOpenBoardDetailList(boardBeanModel);
+    }
+
+    @Override
+    public void onOpenBoardDetailList(BoardBeanModel board) {
+        view.onViewShowBoardDetailList(board);
     }
 
     @Override
@@ -92,17 +116,26 @@ public class HardwareInfoPresenterImpl extends AbstractPresenter implements
 
         infoShowAvailableBoardsInteractor =
                 new ShowAvailableBoardsInteractorImpl
-                        (mExecutor, mMainThread, boardRepository,this);
+                        (mExecutor, mMainThread, boardRepository, this);
 
         infoInteractor =
                 new HardwareInfoInteractorImpl
-                        (       mExecutor,
+                        (
+                                mExecutor,
                                 mMainThread,
                                 boardRepository,
                                 this,
-                                infoShowAvailableBoardsInteractor);
+                                infoShowAvailableBoardsInteractor
+                        );
         infoInteractor.execute();
-        collectionInteractor=new BoardCollectionInteractorImlp(mExecutor,mMainThread,boardRepository,this);
+        collectionInteractor = new BoardCollectionInteractorImpl
+                (
+                        mExecutor,
+                        mMainThread,
+                        boardRepository,
+                        this
+                );
+
 
     }
 
@@ -128,8 +161,5 @@ public class HardwareInfoPresenterImpl extends AbstractPresenter implements
         view.showError(err);
     }
 
-    @Override
-    public void onError(String message) {
-        view.showError(message);
-    }
+
 }

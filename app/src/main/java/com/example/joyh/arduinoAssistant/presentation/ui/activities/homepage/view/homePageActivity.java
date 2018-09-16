@@ -16,9 +16,11 @@
 
 package com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -34,16 +36,21 @@ import com.baidu.mobstat.StatService;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo.APIInfoActivity;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.about.aboutSoftWareActivity;
 import com.example.joyh.arduinoAssistant.R;
-import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.HardWareInfoActivity;
+import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.HardWareInfoActivity;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.setting.settingFragment;
 import com.githang.statusbar.StatusBarCompat;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * 主页界面
  */
+@RuntimePermissions
 public class homePageActivity extends AppCompatActivity implements IHomePageView {
     //侧边菜单栏
     private DrawerLayout mDrawerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,4 +184,14 @@ public class homePageActivity extends AppCompatActivity implements IHomePageView
     }
 
 
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void needsPermission() {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        homePageActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
 }

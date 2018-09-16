@@ -5,11 +5,10 @@ import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowDownloadableBoardsInteractor;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 import com.example.joyh.arduinoAssistant.domain.repository.MessageRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,30 +49,13 @@ public class ShowDownloadableBoardsInteractorImpl extends AbstractInteractor imp
     @Override
     public void refreshDownloadList() {
         UIshowProgressBar();
-        List<BoardBeanModelImpl> beanModels=showDownloadableBoards();
+        List<BoardBeanModel> beanModels=showDownloadableBoards();
         UIshowDownloadableBoards(beanModels);
         UIhideProgressBar();
     }
 
     @Override
-    public List<BoardBeanModelImpl> showDownloadableBoards() {
-//        List<BoardBeanModelImpl> boardList = new ArrayList<>();
-//        List<String> boardName;
-//        List<String> boardURL;
-//
-//        boardName = boardRepository.getDownloadableBoardName(BoardRepository.ENTRY_LEVEL);
-//        boardURL = boardRepository.getDownloadableBoardImgURL(BoardRepository.ENTRY_LEVEL);
-//        boardName.addAll(boardRepository.getDownloadableBoardName(BoardRepository.ENHANCED_FEATURES));
-//        boardURL.addAll(boardRepository.getDownloadableBoardImgURL(BoardRepository.ENHANCED_FEATURES));
-//        boardName.addAll(boardRepository.getDownloadableBoardName(BoardRepository.RETIRED));
-//        boardURL.addAll(boardRepository.getDownloadableBoardImgURL(BoardRepository.RETIRED));
-//        for (int i = 0; i < boardName.size(); i++) {
-//            BoardBeanModelImpl board = new BoardBeanModelImpl();
-//            board.setBoardName(boardName.get(i));
-//            board.setPicURL(boardURL.get(i));
-//            boardList.add(board);
-//
-//        }
+    public List<BoardBeanModel> showDownloadableBoards() {
         return boardRepository.getDownloadableBoards();
     }
 
@@ -95,7 +77,7 @@ public class ShowDownloadableBoardsInteractorImpl extends AbstractInteractor imp
         });
     }
 
-    private void UIshowDownloadableBoards(final List<BoardBeanModelImpl> boardList) {
+    private void UIshowDownloadableBoards(final List<BoardBeanModel> boardList) {
         mMainThread.post(new Runnable() {
             @Override
             public void run() {
@@ -106,14 +88,7 @@ public class ShowDownloadableBoardsInteractorImpl extends AbstractInteractor imp
         });
     }
 
-    void UIshowError() {
-        mMainThread.post(new Runnable() {
-            @Override
-            public void run() {
 
-            }
-        });
-    }
 
 
 

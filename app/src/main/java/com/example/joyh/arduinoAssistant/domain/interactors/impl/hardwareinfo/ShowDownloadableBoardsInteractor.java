@@ -1,7 +1,7 @@
 package com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo;
 
 import com.example.joyh.arduinoAssistant.domain.interactors.base.Interactor;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 
 import java.util.List;
 
@@ -12,12 +12,12 @@ import java.util.List;
 public interface ShowDownloadableBoardsInteractor extends Interactor {
     interface Callback{
         void onShowDownLoadableBoardsError(String err);
-        void onShowDownloadableBoards(List<BoardBeanModelImpl> boards);
+        void onShowDownloadableBoards(List<BoardBeanModel> boards);
         void onNoDownloadableBoard();
 
         void onShowProgress();
         void onHideProgress();
     }
-    List<BoardBeanModelImpl>  showDownloadableBoards();
+    List<BoardBeanModel>  showDownloadableBoards();
     void refreshDownloadList();
 }

@@ -1,4 +1,4 @@
-package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo;
+package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.fragment;
 
 import android.support.v4.app.Fragment;
 

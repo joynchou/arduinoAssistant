@@ -1,7 +1,7 @@
 package com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo;
 
 import com.example.joyh.arduinoAssistant.domain.interactors.base.Interactor;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface ShowDownloadedBoardInteractor  extends Interactor{
     interface Callback{
         void onDeleteBoard(String boardName);
         void onNoDownloadedBoard();
-        void onshowDownloadedBoards(List<BoardBeanModelImpl> boards);
+        void onshowDownloadedBoards(List<BoardBeanModel> boards);
         void onError(String error);
     }
     void deletaBoard(String boardName);

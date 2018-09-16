@@ -1,12 +1,11 @@
 package com.example.joyh.arduinoAssistant.domain.model.impl;
 
-import com.example.joyh.arduinoAssistant.domain.model.BoardBeanModel;
-
 /**
  * Created by joyn on 2018/8/21 0021.
+ * 开发板对象，保存了开发板的各种信息以及各类资源的保存路径
  */
 
-public class BoardBeanModelImpl implements BoardBeanModel {
+public class BoardBeanModel {
     //板子的唯一id
     private int boardId;
     //板子的名字
@@ -22,6 +21,30 @@ public class BoardBeanModelImpl implements BoardBeanModel {
     private String schematicPath;
     //pcb路径
     private String PCBPath;
+    //对象所拥有的资源总数
+    private int resourceNum;
+
+    public int getResourceNum() {
+        resourceNum=0;
+        if(!intro.isEmpty()){
+            resourceNum++;
+        }
+        if(picPath!=null){
+            resourceNum++;
+        }
+        if(pinFigurePath!=null){
+            resourceNum++;
+        }
+        if(schematicPath!=null){
+            resourceNum++;
+        }
+        if(PCBPath!=null){
+            resourceNum++;
+        }
+        return resourceNum;
+    }
+
+
 
     public String getPicPath() {
         return picPath;
@@ -92,7 +115,7 @@ public class BoardBeanModelImpl implements BoardBeanModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BoardBeanModelImpl that = (BoardBeanModelImpl) o;
+        BoardBeanModel that = (BoardBeanModel) o;
 
         return boardName != null ? boardName.equals(that.boardName) : that.boardName == null;
     }
@@ -106,7 +129,7 @@ public class BoardBeanModelImpl implements BoardBeanModel {
 
     @Override
     public String toString() {
-        return "BoardBeanModelImpl{" +
+        return "BoardBeanModel{" +
                 "boardId=" + boardId +
                 ", boardName='" + boardName + '\'' +
                 '}';

@@ -15,7 +15,7 @@ import static com.example.joyh.arduinoAssistant.domain.repository.BoardRepositor
  * Interactor :collect already downloaded board
  */
 
-public class BoardCollectionInteractorImlp extends AbstractCollectionInteractor implements BoardCollectionInteractor {
+public class BoardCollectionInteractorImpl extends AbstractCollectionInteractor implements BoardCollectionInteractor {
 
 
     private BoardCollectionInteractor.Callback callback;
@@ -23,7 +23,7 @@ public class BoardCollectionInteractorImlp extends AbstractCollectionInteractor 
     private CollectionModel collectionModel;
     private boolean state;
 
-    public BoardCollectionInteractorImlp(Executor threadExecutor, MainThread mainThread, BoardRepository boardRepository, Callback callback) {
+    public BoardCollectionInteractorImpl(Executor threadExecutor, MainThread mainThread, BoardRepository boardRepository, Callback callback) {
         super(threadExecutor, mainThread);
         this.boardRepository = boardRepository;
         this.callback = callback;

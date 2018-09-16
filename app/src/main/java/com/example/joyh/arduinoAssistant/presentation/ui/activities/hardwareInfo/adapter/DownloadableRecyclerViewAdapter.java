@@ -1,7 +1,8 @@
-package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo;
+package com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Environment;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.joyh.arduinoAssistant.R;
@@ -51,8 +53,7 @@ import static com.example.joyh.arduinoAssistant.domain.interactors.impl.hardware
 
 public class DownloadableRecyclerViewAdapter extends
         RecyclerView.Adapter<DownloadableRecyclerViewAdapter.ViewHolder> implements
-        DownloadableRecyclerViewAdapterInterface
-        {
+        DownloadableRecyclerViewAdapterInterface {
     private List<String> boardName;
     private List<String> boardImage;
     private List<Integer> downloadState;
@@ -70,7 +71,7 @@ public class DownloadableRecyclerViewAdapter extends
         this.content = contents;
         this.callback = callback;
         this.context = context;
-        this.boardRepository=boardRepository;
+        this.boardRepository = boardRepository;
         int presentSize = boardName.size();
         Log.i("presentSize", "size=" + presentSize);
         this.downloadPresent = new ArrayList<>();
@@ -83,7 +84,6 @@ public class DownloadableRecyclerViewAdapter extends
         Log.i("downloadPresent", "size=" + downloadPresent.size());
 
     }
-
 
 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -130,35 +130,36 @@ public class DownloadableRecyclerViewAdapter extends
     private void deleteItem(String name) {
         int realPosition = this.boardName.indexOf(name);
         if (realPosition != -1) {
-            Log.i("deleteItem", "element:" + realPosition+" boardName:"+name);
+            Log.i("deleteItem", "element:" + realPosition + " boardName:" + name);
             this.boardName.remove(realPosition);
             this.boardImage.remove(realPosition);
             this.downloadState.remove(realPosition);
             this.downloadPresent.remove(realPosition);
-            this.deletefile(name);
+
             Log.i("downloadPresentList", downloadPresent.toString());
         } else {
             Log.w("deleteItem", "no such element:" + boardName);
         }
 
     }
-    private   void deletefile(String fileName) {
+
+    private void deletefile(String fileName) {
         try {
             // 找到文件所在的路径并删除该文件
             File file = new File(boardRepository.boardDownloadDeletePath(fileName), fileName);
-            if(file.exists()){
+            if (file.exists()) {
                 deleteFile(file);
-                Log.i("fileDelete", "deletefile: "+file.toString());
-            }
-            else{
-                Log.i("fileDelete", "no such file: "+file.toString());
+                Log.i("fileDelete", "deletefile: " + file.toString());
+            } else {
+                Log.i("fileDelete", "no such file: " + file.toString());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private void deleteFile(File dir){
+
+    private void deleteFile(File dir) {
         if (dir == null || !dir.exists() || !dir.isDirectory())
             return;
         for (File file : dir.listFiles()) {
@@ -169,6 +170,7 @@ public class DownloadableRecyclerViewAdapter extends
         }
         dir.delete();// 删除目录本身
     }
+
     private File saveImage(Bitmap bmp, String name) {
         String path = Environment.getExternalStorageDirectory().getPath()
                 + File.separator
@@ -197,6 +199,7 @@ public class DownloadableRecyclerViewAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        //TODO 这里不能处理保存图片的逻辑，需要在后期更改，现在是临时的方法
         SimpleTarget<Bitmap> mSimpleTarget = new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -207,7 +210,13 @@ public class DownloadableRecyclerViewAdapter extends
         };
         holder.title.setText(boardName.get(position));
 
+
+
+        //TODO:glide 中的很多方法都用不了，不清楚原因是什么
+
         Glide.with(context).asBitmap().load(boardImage.get(position)).into(mSimpleTarget);
+
+
 
         switch (downloadState.get(position)) {
             case DOWNLOAD_STATE_DOWNLOADING:
@@ -234,94 +243,19 @@ public class DownloadableRecyclerViewAdapter extends
         holder.download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("cardview", "onClick: download " + position + "has been pressed");
+                Log.i("cardview", "onClick: download " + position + "has been pressed" + "state:" + downloadState.get(position));
                 callback.onDownloadBoard(boardName.get(position), position, downloadState.get(position));
 
             }
         });
         //TODO :这个操作是删除，但是这里没有用interactor来实现，是错误的做法，后期需要将其逻辑
         //移到interactor之中
-        if(sysVersion>18) {
 
-            holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (downloadState.get(position) == DOWNLOAD_STATE_FINISH) {
-                        Log.i("cardview", "onClick: card " + position + "has been pressed");
-                        PopupMenu popupMenu = new PopupMenu(context, holder.cardView);
-                        popupMenu.inflate(R.menu.menu_download_list_option);
-                        popupMenu.show();
-                        popupMenu.setOnMenuItemClickListener(
-                                new PopupMenu.OnMenuItemClickListener() {
-                                    @Override
-                                    public boolean onMenuItemClick(MenuItem item) {
-                                        switch (item.getItemId()) {
-                                            case R.id.menu_option_delete:
-
-                                                deleteItem(holder.title.getText().toString());
-                                                mainThread.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        notifyItemRemoved(position);
-                                                        notifyItemRangeChanged(position, boardName.size() - position);
-                                                    }
-                                                });
-
-
-                                                break;
-                                        }
-                                        return false;
-                                    }
-                                });
-
-                    }
-                    return false;
-                }
-            });
-        }
-        else{
-            holder.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (downloadState.get(position) == DOWNLOAD_STATE_FINISH) {
-                        Log.i("cardview", "onClick: card " + position + "has been pressed");
-                        PopupMenu popupMenu = new PopupMenu(context, holder.constraintLayout);
-                        popupMenu.inflate(R.menu.menu_download_list_option);
-                        popupMenu.show();
-                        popupMenu.setOnMenuItemClickListener(
-                                new PopupMenu.OnMenuItemClickListener() {
-                                    @Override
-                                    public boolean onMenuItemClick(MenuItem item) {
-                                        switch (item.getItemId()) {
-                                            case R.id.menu_option_delete:
-
-                                                deleteItem(holder.title.getText().toString());
-                                                mainThread.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        notifyItemRemoved(position);
-                                                        notifyItemRangeChanged(position, boardName.size() - position);
-                                                    }
-                                                });
-
-
-                                                break;
-                                        }
-                                        return false;
-                                    }
-                                });
-
-                    }
-                    return false;
-                }
-            });
-        }
         if (downloadPresent.get(position) != 0) {
-            Log.i("downloadPresent:","position:"+position+"  progress"+ downloadPresent.get(position).toString());
+            Log.i("downloadPresent:", "position:" + position + "  progress" + downloadPresent.get(position).toString());
             holder.progressBar.setVisibility(View.VISIBLE);
             holder.progressBar.setProgress(downloadPresent.get(position));
-        }
-        else{
+        } else {
             holder.progressBar.setVisibility(View.GONE);
         }
 
@@ -341,11 +275,10 @@ public class DownloadableRecyclerViewAdapter extends
             view = itemView;
             title = itemView.findViewById(R.id.title);
             backgroundImage = itemView.findViewById(R.id.backgroundImage);
-            if(sysVersion>18){
+            if (sysVersion > 18) {
                 cardView = itemView.findViewById(R.id.cardview);
-            }
-            else{
-                constraintLayout=itemView.findViewById(R.id.constraionlayout);
+            } else {
+                constraintLayout = itemView.findViewById(R.id.constraionlayout);
             }
 
             progressBar = itemView.findViewById(R.id.download_progress);

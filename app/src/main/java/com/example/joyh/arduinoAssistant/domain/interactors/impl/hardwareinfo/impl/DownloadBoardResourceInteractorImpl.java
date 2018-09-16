@@ -44,6 +44,7 @@ public class DownloadBoardResourceInteractorImpl extends AbstractInteractor impl
 
     @Override
     public void run() {
+
         switch (downloadState) {
             //正在下载中点击按钮，则是要暂停下载
             case DOWNLOAD_STATE_DOWNLOADING:
@@ -52,6 +53,7 @@ public class DownloadBoardResourceInteractorImpl extends AbstractInteractor impl
             //已经下载好了再点击下载按钮则是要查看
             case DOWNLOAD_STATE_FINISH:
                 callback.onBoardDownloadFinish(boardname, position);
+                callback.onShowBoardResource(boardname);
                 break;
             //在暂停的时候点击。则是要继续下载
             case DOWNLOAD_STATE_PAUSE:

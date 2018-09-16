@@ -4,10 +4,7 @@ import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowDownloadedBoardInteractor;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
-
-import java.util.List;
 
 /**
  * Created by joyn on 2018/9/2 0002.
@@ -40,14 +37,18 @@ public class ShowDownloadedBoardInteractorImpl extends AbstractInteractor implem
 
     @Override
     public void showDownloadedBoards() {
-        mMainThread.post(new Runnable() {
-            @Override
-            public void run() {
-                callback.onshowDownloadedBoards(boardRepository.getAvailableBoards());
-            }
-        });
+        if(boardRepository.getAvailableBoardAmount()!=0) {
+            mMainThread.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onshowDownloadedBoards(boardRepository.getAvailableBoards());
+                }
+            });
 
-
+        }
+        else{
+            callback.onNoDownloadedBoard();
+        }
     }
 
     @Override

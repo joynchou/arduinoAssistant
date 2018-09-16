@@ -7,7 +7,7 @@ import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.De
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.ShowDownloadedBoardInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.DeleteDownloadedBoardInteractorImpl;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.impl.ShowDownloadedBoardInteractorImpl;
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.presentation.presenters.BoardDeletePresenter;
 import com.example.joyh.arduinoAssistant.presentation.presenters.base.AbstractPresenter;
 
@@ -82,7 +82,7 @@ public class BoardDeletePresenterImpl extends AbstractPresenter implements Board
     }
 
     @Override
-    public void onshowDownloadedBoards(List<BoardBeanModelImpl> boards) {
+    public void onshowDownloadedBoards(List<BoardBeanModel> boards) {
         view.onViewshowDownloadedBoards(boards);
     }
 

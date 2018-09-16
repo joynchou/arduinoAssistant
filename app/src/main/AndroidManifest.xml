@@ -61,7 +61,7 @@
                 android:value="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity" />
         </activity>
         <activity
-            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.HardWareInfoActivity"
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.HardWareInfoActivity"
             android:parentActivityName="com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <meta-data
@@ -71,13 +71,21 @@
         <activity android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.apiinfo.APIInfoDetails" />
 
         <activity
-            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.BoardManagerActivity"
-            android:parentActivityName="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.HardWareInfoActivity"
+            android:name="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.BoardManagerActivity"
+            android:parentActivityName="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.HardWareInfoActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.HardWareInfoActivity" />
+                android:value="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.HardWareInfoActivity" />
         </activity>
+        <activity
+            android:name=".presentation.ui.activities.hardwareInfo.activity.BoardDetailActivity"
+            android:parentActivityName=".presentation.ui.activities.hardwareInfo.activity.HardWareInfoActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.HardWareInfoActivity" />
+        </activity>
+        <activity android:name=".presentation.ui.activities.hardwareInfo.activity.ResourceWindow" />
 
         <meta-data
             android:name="preloaded_fonts"

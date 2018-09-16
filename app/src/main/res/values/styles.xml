@@ -20,7 +20,7 @@
 
 
     <style name="Base.Theme.DesignDemo" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#009688</item>
+        <item name="colorPrimary">#3c3f41</item>
         <item name="colorPrimaryDark">#00796B</item>
         <item name="colorAccent">#FF9800</item>
 

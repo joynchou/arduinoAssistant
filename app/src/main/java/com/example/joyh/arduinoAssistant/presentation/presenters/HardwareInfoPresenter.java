@@ -1,6 +1,6 @@
 package com.example.joyh.arduinoAssistant.presentation.presenters;
 
-import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModelImpl;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.presentation.presenters.base.BasePresenter;
 import com.example.joyh.arduinoAssistant.presentation.ui.BaseView;
 
@@ -15,10 +15,12 @@ public interface HardwareInfoPresenter extends BasePresenter{
     //在ui中实现的回调
     interface View extends BaseView{
         void onShowNoAvailableBoard();
-        void onShowBoards(List<BoardBeanModelImpl> boards,List<Boolean> collectionState );
+        void onShowBoards(List<BoardBeanModel> boards, List<Boolean> collectionState );
         void onOpenBoardDownloadManager();
         void onViewChangeCollectionState(String boardName,boolean state);
+        void onViewShowBoardDetailList(BoardBeanModel detailList);
     }
     void presenterCollectBoard(String boardName);
     void presenterStarButtonClicked(String boardName);
+    void presenterCardClicked(String boardName);
 }
