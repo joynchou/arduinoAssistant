@@ -117,7 +117,7 @@ public class BoardManagerActivity extends SwipeBackActivity {
 
     private void initToorbor() {
 
-        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary), false);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("下载器");
         setSupportActionBar(toolbar);

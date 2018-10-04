@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Created by joyn on 2018/8/21 0021.
+ * 用例8、查看可下载的开发板
  */
 
 public interface ShowDownloadableBoardsInteractor extends Interactor {

@@ -4,10 +4,11 @@ import com.example.joyh.arduinoAssistant.domain.executor.Executor;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractCollectionInteractor;
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.BoardCollectionInteractor;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 
-import static com.example.joyh.arduinoAssistant.domain.repository.BoardRepository.COLLECTION_TYPE_BOARD;
+import static com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel.COLLECTION_TYPE_BOARD;
 
 /**
  * Created by joyn on 2018/9/3 0003.
@@ -47,7 +48,7 @@ public class BoardCollectionInteractorImpl extends AbstractCollectionInteractor 
 
     }
 
-    //
+
     @Override
     public void changCollectionState(CollectionModel collectionModel, boolean state) {
         this.collectionModel = collectionModel;
@@ -79,13 +80,15 @@ public class BoardCollectionInteractorImpl extends AbstractCollectionInteractor 
     }
 
     @Override
-    public void usecaseStarButtonClicked(String boardName) {
+    public void usecaseStarButtonClicked(BoardBeanModel board) {
 
         CollectionModel collectionModel = new CollectionModel();
-        collectionModel.setName(boardName);
+        collectionModel.setName(board.getBoardName());
         collectionModel.setType(COLLECTION_TYPE_BOARD);
-        boolean state = boardRepository.getCollectionState(collectionModel);
+        collectionModel.setCollectionBean(board);
 
+        boolean state = boardRepository.getCollectionState(collectionModel);
+        boardRepository.changeCollectionState(collectionModel,!state);
         this.usecaseChangCollectionState(collectionModel, !state);
 
 

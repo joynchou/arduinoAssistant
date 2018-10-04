@@ -9,7 +9,8 @@ import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 import com.example.joyh.arduinoAssistant.domain.model.impl.SharableBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 
-import static com.example.joyh.arduinoAssistant.domain.repository.BoardRepository.COLLECTION_TYPE_BOARD;
+import static com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel.COLLECTION_TYPE_BOARD;
+
 
 /**
  * Created by joyn on 2018/9/13 0013.
@@ -29,13 +30,10 @@ public class ShowBoardDetailListInteractorImpl extends AbstractInteractor implem
     }
 
     @Override
-    public void InteractorShowBoardDetailList() {
+    public void InteractorShowBoardDetailList(String boardName) {
 
-        CollectionModel collectionModel=new CollectionModel();
-        collectionModel.setName(boardName);
-        collectionModel.setType(COLLECTION_TYPE_BOARD);
-        callback.onShowBoardDetailList(boardBeanModel);
-        callback.onShowBoardCollectionState(boardRepository.getCollectionState(collectionModel));
+        this.boardName=boardName;
+        execute();
 
     }
 
@@ -43,7 +41,19 @@ public class ShowBoardDetailListInteractorImpl extends AbstractInteractor implem
 
     @Override
     public void run() {
-        //TODO 这里只是使用一个空对象作为测试
-        this.InteractorShowBoardDetailList();
+
+        boardBeanModel= boardRepository.getBoardBean(boardName);
+        CollectionModel collectionModel=new CollectionModel();
+        collectionModel.setName(boardName);
+        collectionModel.setType(COLLECTION_TYPE_BOARD);
+        callback.onShowBoardDetailList(boardBeanModel);
+        callback.onShowBoardCollectionState(boardRepository.getCollectionState(collectionModel));
+    }
+
+
+
+    @Override
+    public void InteractorItemClicked(BoardBeanModel boardBeanModel) {
+
     }
 }

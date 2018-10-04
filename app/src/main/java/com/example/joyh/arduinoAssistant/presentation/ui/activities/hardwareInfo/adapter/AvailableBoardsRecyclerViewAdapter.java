@@ -15,8 +15,10 @@ import android.widget.TextView;
 
 import com.example.joyh.arduinoAssistant.R;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +29,11 @@ import java.util.List;
 public class AvailableBoardsRecyclerViewAdapter extends RecyclerView.Adapter<AvailableBoardsRecyclerViewAdapter.viewHolder> {
     private List<String> boardImgList;
     private List<String> boardNameList;
+
     private List<Boolean> boardCollectionState;
+    private List<BoardBeanModel> boardBeanModelList;
+
+
     private MainThread mainThread;
     private AvailableBoardsRecyclerViewAdapterInterface.Callback callback;
 
@@ -43,12 +49,21 @@ public class AvailableBoardsRecyclerViewAdapter extends RecyclerView.Adapter<Ava
             });
         }
     }
-    public AvailableBoardsRecyclerViewAdapter(List<String> boardNameList , List<String>  boardImgList, List<Boolean> collectionState,AvailableBoardsRecyclerViewAdapterInterface.Callback callback) {
-        this.boardImgList = boardImgList;
-        this.boardNameList = boardNameList;
+    public AvailableBoardsRecyclerViewAdapter(List<BoardBeanModel> boardBeanModelList,List<Boolean> collectionStateList,AvailableBoardsRecyclerViewAdapterInterface.Callback callback) {
+
+
+        this.boardBeanModelList=boardBeanModelList;
+        this.boardCollectionState=collectionStateList;
         this.callback = callback;
+
+        boardNameList = new ArrayList<>();
+         boardImgList = new ArrayList<>();
+        for (int i = 0; i < boardBeanModelList.size(); i++) {
+            boardNameList.add(boardBeanModelList.get(i).getBoardName());
+            boardImgList.add(boardBeanModelList.get(i).getPicPath());
+        }
         mainThread= MainThreadImpl.getInstance();
-        boardCollectionState=collectionState;
+
         for(int i=0;i<boardImgList.size();i++){
             boardCollectionState.add(false);
         }
@@ -73,7 +88,7 @@ public class AvailableBoardsRecyclerViewAdapter extends RecyclerView.Adapter<Ava
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.cardview, parent, false);
+                .inflate(R.layout.recyclerview_available_boards, parent, false);
 
         return new viewHolder(view);
     }
@@ -91,14 +106,14 @@ public class AvailableBoardsRecyclerViewAdapter extends RecyclerView.Adapter<Ava
         holder.starButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.onStarButtonClicked(boardNameList.get(position));
+                callback.onStarButtonClicked(boardBeanModelList.get(position));
             }
         });
         if(boardCollectionState.get(position)){
-            holder.starButton.setImageResource(R.drawable.ic_star);
+            holder.starButton.setImageResource(R.drawable.ic_favorite_red);
         }
         else{
-            holder.starButton.setImageResource(R.drawable.ic_unstar);
+            holder.starButton.setImageResource(R.drawable.ic_favorite_border);
         }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {

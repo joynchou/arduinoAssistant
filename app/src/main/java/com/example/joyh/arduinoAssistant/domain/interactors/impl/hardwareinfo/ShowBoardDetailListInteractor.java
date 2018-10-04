@@ -6,7 +6,8 @@ import com.example.joyh.arduinoAssistant.domain.model.impl.SharableBeanModel;
 
 /**
  * Created by joyn on 2018/9/13 0013.
- * 用例：打开某个板子的资源列表
+ * 用例2：打开某个板子的资源列表
+ *       浏览单个开发板的所有资源
  * 由用户触发此用例
  */
 
@@ -31,7 +32,9 @@ public interface ShowBoardDetailListInteractor extends Interactor {
      * 展示板子的资源列表
      *
      */
-    void InteractorShowBoardDetailList();
+    void InteractorShowBoardDetailList(String boardName);
+
+    void InteractorItemClicked(BoardBeanModel boardBeanModel);
 
 
 

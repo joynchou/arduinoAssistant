@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/ic_star"
-        android:icon="@drawable/ic_star"
+        android:icon="@drawable/ic_favorite_red"
         android:title="收藏"
         app:showAsAction="always" />
 </menu>

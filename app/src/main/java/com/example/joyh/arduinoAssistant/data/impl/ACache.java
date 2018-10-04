@@ -58,6 +58,8 @@ public class ACache {
 	private static Map<String, ACache> mInstanceMap = new HashMap<String, ACache>();
 	private ACacheManager mCache;
 
+
+
 	public static ACache get(Context ctx) {
 		return get(ctx, "ACache");
 	}

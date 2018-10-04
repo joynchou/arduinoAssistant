@@ -1,5 +1,6 @@
 package com.example.joyh.arduinoAssistant.data.impl;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -29,11 +31,22 @@ public class BoardRepositoryImpl implements BoardRepository {
 
 
     private Context context;
-    private BoardRepository.Callback callback;
+   // private BoardRepository.Callback callback;
+    private volatile static BoardRepositoryImpl singleInstance;
 
-    public BoardRepositoryImpl(Context context, BoardRepository.Callback callback) {
+    private BoardRepositoryImpl(Context context) {
         this.context = context;
-        this.callback = callback;
+       // this.callback = callback;
+    }
+    public static BoardRepositoryImpl getSingleInstance(Context context){
+        if(singleInstance==null){
+            synchronized (BoardRepositoryImpl.class){
+                if(singleInstance==null){
+                    singleInstance=new BoardRepositoryImpl(context.getApplicationContext());
+                }
+            }
+        }
+        return singleInstance;
     }
 
     @Override
@@ -123,13 +136,13 @@ public class BoardRepositoryImpl implements BoardRepository {
                     Log.i(TAG, "zipfile:" + zipFile.toString() + "has been deleted");
                 } else {
                     Log.w(TAG, "zipfile:" + zipFile.toString() + "doesn't been deleted");
-                    callback.onError("zipfile:" + zipFile.toString() + "doesn't been deleted");
+                    //callback.onError("zipfile:" + zipFile.toString() + "doesn't been deleted");
                 }
                 if (jpgFile.delete()) {
                     Log.i(TAG, "jpgFile:" + jpgFile.toString() + "has been deleted");
                 } else {
                     Log.w(TAG, "jpgFile:" + jpgFile.toString() + "doesn't been deleted");
-                    callback.onError("jpgFile:" + jpgFile.toString() + "doesn't been deleted");
+                   // callback.onError("jpgFile:" + jpgFile.toString() + "doesn't been deleted");
                 }
 
             } else {
@@ -168,28 +181,35 @@ public class BoardRepositoryImpl implements BoardRepository {
                 modelToSave.setName(model.getName());
                 modelToSave.setType(model.getType());
                 modelToSave.setState(state);
+                modelToSave.setCollectionBean(model.getCollectionBean());
                 positionOfModel = cacheList.indexOf(modelToSave);
 
                 if (positionOfModel != -1) {
 
                     cacheList.set(positionOfModel, modelToSave);
                     Log.i(logTag, "hashmap内容：" + cacheMap);
-                } else {
+                }
+                else
+                {
                     Log.i(logTag, "没有" + model.getName() + "的缓存存在，即将创建");
                     CollectionModel model1 = new CollectionModel();
                     model1.setName(model.getName());
                     model1.setType(model.getType());
                     model1.setState(state);
+                    model1.setCollectionBean(model.getCollectionBean());
                     cacheList.add(model1);
                     Log.i(logTag, "hashmap内容：" + cacheMap);
                 }
                 cacheMap.put(model.getType(), cacheList);
                 cache.put(cacheKey, cacheMap);
-            } else {
+            }
+            else
+            {
 
             }
 
-        } else {
+        }
+        else {
             Log.i(logTag, "没有 " + cacheKey + "的缓存");
             cacheMap = new LinkedHashMap<>();
             List<CollectionModel> collectionModelList1 = new ArrayList<>();
@@ -204,6 +224,7 @@ public class BoardRepositoryImpl implements BoardRepository {
 
 
     }
+    //TODO:此方法需要改进，不能让每一个收藏对象使用一个缓存，使用合并的map缓存
 
     @Override
     public boolean getCollectionState(CollectionModel model) {
@@ -309,7 +330,7 @@ public class BoardRepositoryImpl implements BoardRepository {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                callback.onError(e.toString());
+               // callback.onError(e.toString());
 
             }
         }
@@ -366,7 +387,7 @@ public class BoardRepositoryImpl implements BoardRepository {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                callback.onError(e.toString());
+                //callback.onError(e.toString());
             }//通过url获取到网页内容
 
         }
@@ -425,7 +446,7 @@ public class BoardRepositoryImpl implements BoardRepository {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                callback.onError(e.toString());
+                //callback.onError(e.toString());
             }
         }
 
@@ -467,7 +488,7 @@ public class BoardRepositoryImpl implements BoardRepository {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-                callback.onError(e.toString());
+                //callback.onError(e.toString());
             }
         }
 
@@ -545,11 +566,46 @@ public class BoardRepositoryImpl implements BoardRepository {
 
     @Override
     public BoardBeanModel getBoardBean(String boardName) {
-        return null;
+        ACache boardCache=ACache.get(context);
+        BoardBeanModel boardBeanModel=new BoardBeanModel();
+        String cacheTag="BoardBean";
+        HashMap<String,BoardBeanModel> boardBeanModelMap=
+                (HashMap<String,BoardBeanModel>)boardCache.getAsObject(cacheTag);
+        if(boardBeanModelMap!=null){
+            Log.i("缓存", "有" + cacheTag + "的缓存存在");
+            boardBeanModel=boardBeanModelMap.get(boardName);
+
+
+        }
+        else{
+            Log.i("缓存", "没有" + cacheTag + "的缓存存在");
+            boardBeanModel.setBoardName("no data");
+            boardBeanModel.setSchematicPath("no data");
+            boardBeanModel.setPCBPath("no data");
+        }
+        return boardBeanModel;
     }
 
     @Override
     public void saveBoardBean(BoardBeanModel boardBeanModel) {
+        ACache boardCache=ACache.get(context);
+        String cacheTag="BoardBean";
 
+        HashMap<String,BoardBeanModel> boardBeanModelMap=null;
+        boardBeanModelMap= (HashMap<String,BoardBeanModel>)boardCache.getAsObject(cacheTag);
+        //如果存在此缓存
+        if(boardBeanModelMap!=null){
+            Log.i("缓存", "有" + cacheTag + "的缓存存在，不需要重新创建");
+            boardBeanModelMap.put(boardBeanModel.getBoardName(),boardBeanModel);
+        }
+        //没有则创建
+        else{
+            Log.i("缓存", "没有" + cacheTag + "的缓存存在，需要重新创建");
+            boardBeanModelMap=new HashMap<>();
+            boardBeanModelMap.put(boardBeanModel.getBoardName(),boardBeanModel);
+        }
+
+
+        boardCache.put(cacheTag,boardBeanModelMap);
     }
 }

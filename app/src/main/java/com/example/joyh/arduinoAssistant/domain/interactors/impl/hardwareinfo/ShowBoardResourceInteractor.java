@@ -5,7 +5,7 @@ import com.example.joyh.arduinoAssistant.domain.model.impl.SharableBeanModel;
 
 /**
  * Created by joyn on 2018/9/13 0013.
- * 用例：打开某个板子的详细资源界面
+ * 用例4、查看单个资源
  */
 
 public interface ShowBoardResourceInteractor extends Interactor {

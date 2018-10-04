@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aitangba.swipeback.SwipeBackActivity;
-import com.bumptech.glide.Glide;
 import com.example.joyh.arduinoAssistant.R;
 import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.Executor;
@@ -27,8 +26,8 @@ import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.executor.impl.ThreadExecutor;
 import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
-import com.example.joyh.arduinoAssistant.presentation.presenters.HardwareInfoPresenter;
-import com.example.joyh.arduinoAssistant.presentation.presenters.impl.HardwareInfoPresenterImpl;
+import com.example.joyh.arduinoAssistant.presentation.presenters.hardwareInfo.HardwareInfoPresenter;
+import com.example.joyh.arduinoAssistant.presentation.presenters.hardwareInfo.impl.HardwareInfoPresenterImpl;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.AvailableBoardsRecyclerViewAdapter;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.AvailableBoardsRecyclerViewAdapterInterface;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
@@ -44,7 +43,7 @@ import butterknife.OnClick;
  */
 
 public class HardWareInfoActivity extends SwipeBackActivity implements HardwareInfoPresenter.View,
-        BoardRepository.Callback,
+
         AvailableBoardsRecyclerViewAdapterInterface.Callback {
     private HardwareInfoPresenter mainPresenter;
     private BoardRepositoryImpl boardRepository;
@@ -71,24 +70,15 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
         progressBar = findViewById(R.id.progressBar);
         info = findViewById(R.id.info_text);
 
-        StatusBarCompat.setStatusBarColor(this, getResources().getColor(R.color.colorPrimary), false);
 
 
-        ViewPager viewPager = findViewById(R.id.viewPager);
-//        if (viewPager != null) {
-//            setupViewPager(viewPager);
-//        } else {
-//            Log.w("viwepager", "onCreate: " + "viewpager is null");
-//            showInfo("onCreate: " + "viewpager is null");
-//        }
 
-        mainPresenter.resume();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //mainPresenter.resume();
+        mainPresenter.resume();
 
     }
 
@@ -134,6 +124,11 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
                 Intent intent = new Intent(HardWareInfoActivity.this, BoardManagerActivity.class);
                 startActivity(intent);
                 break;
+                //更换列表显示布局
+            case R.id.menu_gridLayout:
+
+                break;
+
 
         }
         return super.onOptionsItemSelected(item);
@@ -164,23 +159,18 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
 
     @Override
     public void onShowBoards(List<BoardBeanModel> boards, List<Boolean> collectionState ) {
-        List<String> boardName = new ArrayList<>();
-        List<String> boardImg = new ArrayList<>();
-        for (int i = 0; i < boards.size(); i++) {
-            boardName.add(boards.get(i).getBoardName());
-            boardImg.add(boards.get(i).getPicPath());
-        }
+
         info.setVisibility(View.INVISIBLE);
-        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setVisibility(View.VISIBLE);
-        recyclerViewAdapter = new AvailableBoardsRecyclerViewAdapter(boardName, boardImg, collectionState,this);
+        recyclerViewAdapter = new AvailableBoardsRecyclerViewAdapter(boards,collectionState,this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
     }
 
     @Override
-    public void onStarButtonClicked(String boardName) {
-        mainPresenter.presenterStarButtonClicked(boardName);
+    public void onStarButtonClicked(BoardBeanModel board) {
+        mainPresenter.presenterStarButtonClicked(board);
     }
 
     @Override
@@ -211,10 +201,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
         showInfo(message);
     }
 
-    @Override
-    public void onError(String error) {
-        showError(error);
-    }
+
 
     //以下为自定义私有方法
     private void showInfo(String message) {
@@ -233,7 +220,7 @@ public class HardWareInfoActivity extends SwipeBackActivity implements HardwareI
     private void initPresenter() {
         Executor executor = ThreadExecutor.getInstance();
         MainThread mainThread = MainThreadImpl.getInstance();
-        boardRepository = new BoardRepositoryImpl(getApplicationContext(), this);
+        boardRepository =  BoardRepositoryImpl.getSingleInstance(this);
         //presenter实例化
         mainPresenter = new HardwareInfoPresenterImpl(executor, mainThread, boardRepository, this);
     }

@@ -1,19 +1,22 @@
 package com.example.joyh.arduinoAssistant.domain.model.impl;
 
+import java.io.Serializable;
+
 /**
  * Created by joyn on 2018/8/21 0021.
+ * 板子对象
  * 开发板对象，保存了开发板的各种信息以及各类资源的保存路径
  */
 
-public class BoardBeanModel {
-    //板子的唯一id
-    private int boardId;
+public class BoardBeanModel implements Serializable {
+   
     //板子的名字
     private String boardName;
     //板子的简介
     private String intro;
-    //板子图片路径
+    //板子图片网络路径
     private String picURL;
+    //板子图片本地路径
     private String picPath;
     //引脚图路径
     private String pinFigurePath;
@@ -23,10 +26,13 @@ public class BoardBeanModel {
     private String PCBPath;
     //对象所拥有的资源总数
     private int resourceNum;
-
+    /**
+     * 获取资源数目
+     * @return 资源数目
+     */
     public int getResourceNum() {
         resourceNum=0;
-        if(!intro.isEmpty()){
+        if(intro!=null){
             resourceNum++;
         }
         if(picPath!=null){
@@ -78,13 +84,7 @@ public class BoardBeanModel {
         this.intro = intro;
     }
 
-    public int getBoardId() {
-        return boardId;
-    }
 
-    public void setBoardId(int boardId) {
-        this.boardId = boardId;
-    }
 
     public String getPinFigurePath() {
         return pinFigurePath;
@@ -121,17 +121,14 @@ public class BoardBeanModel {
     }
 
     @Override
-    public int hashCode() {
-        int result = boardId;
-        result = 31 * result + (boardName != null ? boardName.hashCode() : 0);
-        return result;
+    public String toString() {
+        return "BoardBeanModel{" +
+                "boardName='" + boardName + '\'' +
+                '}';
     }
 
     @Override
-    public String toString() {
-        return "BoardBeanModel{" +
-                "boardId=" + boardId +
-                ", boardName='" + boardName + '\'' +
-                '}';
+    public int hashCode() {
+        return boardName != null ? boardName.hashCode() : 0;
     }
 }

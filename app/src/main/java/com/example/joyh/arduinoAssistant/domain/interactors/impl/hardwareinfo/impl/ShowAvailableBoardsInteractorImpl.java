@@ -11,7 +11,8 @@ import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.joyh.arduinoAssistant.domain.repository.BoardRepository.COLLECTION_TYPE_BOARD;
+import static com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel.COLLECTION_TYPE_BOARD;
+
 
 /**
  * Created by joyn on 2018/8/21 0021.
@@ -88,6 +89,7 @@ public class ShowAvailableBoardsInteractorImpl extends AbstractInteractor implem
             boardName.add(boardList.get(i).getBoardName());
             collectionModel.setName(boardList.get(i).getBoardName());
             collectionModel.setType(COLLECTION_TYPE_BOARD);
+            collectionModel.setCollectionBean(boardList.get(i));
             collectionState.add(boardRepository.getCollectionState(collectionModel));
         }
         mMainThread.post(new Runnable() {

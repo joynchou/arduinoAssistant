@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,24 +22,27 @@ import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel;
 import com.example.joyh.arduinoAssistant.domain.model.impl.SharableBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
-import com.example.joyh.arduinoAssistant.presentation.presenters.BoardResourcePresenter;
-import com.example.joyh.arduinoAssistant.presentation.presenters.impl.BoardResourcePresenterImpl;
+import com.example.joyh.arduinoAssistant.presentation.presenters.hardwareInfo.BoardResourcePresenter;
+import com.example.joyh.arduinoAssistant.presentation.presenters.hardwareInfo.impl.BoardResourcePresenterImpl;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.BoardDetailRecyclerViewAdapter;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 
-import static com.example.joyh.arduinoAssistant.domain.repository.BoardRepository.COLLECTION_TYPE_BOARD;
+import static com.example.joyh.arduinoAssistant.domain.model.impl.CollectionModel.COLLECTION_TYPE_BOARD;
+
 
 /**
  * Created by joyn on 2018/9/9 0009.
+ * 启动此activity需要提供boardname，否则会错误
  */
 
-public class BoardDetailActivity extends AppCompatActivity implements BoardResourcePresenter.View, BoardRepository.Callback,
+public class BoardDetailActivity extends AppCompatActivity implements BoardResourcePresenter.View,
         BoardDetailRecyclerViewAdapter.Callback {
 
     private String thisBoardName;
     private BoardResourcePresenter mainPresenter;
     private BoardRepository boardRepository;
     private RecyclerView recyclerView;
+    private BoardDetailRecyclerViewAdapter recyclerViewAdapter;
     private Button testButton;
     private CollectionModel collectionModel;
     MainThread mainThread = MainThreadImpl.getInstance();
@@ -52,6 +56,10 @@ public class BoardDetailActivity extends AppCompatActivity implements BoardResou
         if (thisBoardName != null) {
             String TAG = "boardName";
             Log.i(TAG, thisBoardName);
+        }
+        else{
+            showError("指定的boardname为空！");
+            Log.e("空", "指定的boardname为空！" );
         }
 
         initPresenter();
@@ -77,6 +85,7 @@ public class BoardDetailActivity extends AppCompatActivity implements BoardResou
     @Override
     protected void onResume() {
         super.onResume();
+        mainPresenter.resume();
     }
 
     @Override
@@ -95,11 +104,11 @@ public class BoardDetailActivity extends AppCompatActivity implements BoardResou
     public boolean onPrepareOptionsMenu(Menu menu) {
         if(boardRepository.getCollectionState(collectionModel)){
 
-            menu.findItem( R.id.ic_star).setIcon(R.drawable.ic_star);
+            menu.findItem( R.id.ic_star).setIcon(R.drawable.ic_favorite_red);
 
         }
         else{
-            menu.findItem( R.id.ic_star).setIcon(R.drawable.ic_unstar_white);
+            menu.findItem( R.id.ic_star).setIcon(R.drawable.ic_favorite_border);
 
         }
         return super.onPrepareOptionsMenu(menu);
@@ -110,11 +119,11 @@ public class BoardDetailActivity extends AppCompatActivity implements BoardResou
         switch (item.getItemId()) {
             case R.id.ic_star:
                 if(boardRepository.getCollectionState(collectionModel)){
-                   item.setIcon(R.drawable.ic_unstar_white);
+                   item.setIcon(R.drawable.ic_favorite_border);
 
                 }
                 else{
-                    item.setIcon(R.drawable.ic_star);
+                    item.setIcon(R.drawable.ic_favorite_red);
 
                 }
                 boardRepository.changeCollectionState(collectionModel,!boardRepository.getCollectionState(collectionModel));
@@ -157,12 +166,21 @@ public class BoardDetailActivity extends AppCompatActivity implements BoardResou
 
     @Override
     public void onViewShowDetailList(BoardBeanModel beanModel) {
-        mainThread.post(new Runnable() {
-            @Override
-            public void run() {
 
-            }
-        });
+        recyclerViewAdapter=new BoardDetailRecyclerViewAdapter(this,beanModel,this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.setAdapter(recyclerViewAdapter);
+
+    }
+
+    @Override
+    public void onShareBtnClicked(BoardBeanModel boardBeanModel) {
+        mainPresenter.PresenterShareClicked(boardBeanModel);
+    }
+
+    @Override
+    public void onItemClicked(BoardBeanModel boardBeanModel) {
+        mainPresenter.PresenterItemClicked(boardBeanModel);
     }
 
     @Override
@@ -172,15 +190,11 @@ public class BoardDetailActivity extends AppCompatActivity implements BoardResou
     }
 
     @Override
-    public void onError(String error) {
+    public void onViewShareResource() {
 
-        mainThread.post(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
     }
+
+
 
     @Override
     public void showError(String message) {
@@ -196,9 +210,10 @@ public class BoardDetailActivity extends AppCompatActivity implements BoardResou
     private void initPresenter() {
         Executor executor = ThreadExecutor.getInstance();
 
-        boardRepository = new BoardRepositoryImpl(this, this);
+        boardRepository = BoardRepositoryImpl.getSingleInstance(this);
         mainPresenter = new BoardResourcePresenterImpl(thisBoardName, executor, mainThread, boardRepository, this);
-
+        mainPresenter.resume();
+        mainPresenter.PresenterShowBoardDetailList(thisBoardName);
     }
 
     private void initToolbar(String toolbarName) {

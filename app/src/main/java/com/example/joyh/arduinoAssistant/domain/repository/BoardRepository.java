@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Created by joyn on 2018/8/21 0021.
+ * 和硬件查询相关的仓库方法
  */
 
 public interface BoardRepository {
@@ -18,18 +19,9 @@ public interface BoardRepository {
     int ENHANCED_FEATURES = 1;
     int RETIRED = 2;
 
-    /**
-     * 收藏项目的类型
-     */
-    int COLLECTION_TYPE_BOARD=0;
 
-    interface Callback{
-        /**
-         * 错误的回调函数
-         * @param error 错误信息
-         */
-        void onError(String error);
-    }
+
+
 
 
     /**
@@ -37,12 +29,13 @@ public interface BoardRepository {
      * @return 可用的板子数目
      */
     int getAvailableBoardAmount();
-    //取得已经下载的可用的板子
+
+    
     /**
      * 取得已经下载的可用的板子
      */
     List<BoardBeanModel> getAvailableBoards();
-    //
+    
     /**
      * 取得可以供用户下载的板子，不包括已经下载的板子
      */
@@ -64,9 +57,13 @@ public interface BoardRepository {
     /**
      * 计算需要删除的板子的删除路径
      * @param toDeletedBoardName
-     * @return
+     * @return 删除路径
      */
     String boardDownloadDeletePath(String toDeletedBoardName);
+    /**
+     * 
+     * @param board
+     */
     void addBoardResource(BoardBeanModel board);
 
     /**
@@ -74,6 +71,10 @@ public interface BoardRepository {
      * @param boardName 需要被删除的板子名字
      */
     void deleteBoardResource(String boardName);
+    /**
+     * 查找板子
+     * @param boradName 板子名字
+     */
     void queryBoardResource(String boradName);
 
     /**
@@ -110,18 +111,18 @@ public interface BoardRepository {
      * @param state
      */
     void changeCollectionState(CollectionModel model,boolean state);
-
+    //TODO：此函数可能不应该在此实现，因为这个不止这个模块需要用
     /**
-     *
+     *获取收藏状态
      * @param model
      * @return
      */
     boolean getCollectionState(CollectionModel model);
 
     /**
-     *
+     *获取某个类型的收藏对象的列表
      * @param type
-     * @return
+     * @return 收藏对象列表
      */
     List<CollectionModel> getCollectionStateList(int type);
 

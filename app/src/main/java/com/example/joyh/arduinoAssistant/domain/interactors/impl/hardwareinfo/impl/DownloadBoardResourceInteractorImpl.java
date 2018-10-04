@@ -7,6 +7,7 @@ import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.interactors.base.AbstractInteractor;
 
 import com.example.joyh.arduinoAssistant.domain.interactors.impl.hardwareinfo.DownloadBoardResourceInteractor;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 
 import java.util.List;
@@ -87,6 +88,7 @@ public class DownloadBoardResourceInteractorImpl extends AbstractInteractor impl
     }
     //内部处理下载的方法
     private void DownloadBoardByName(String name, int listPosition, int downloadState){
+
         Log.i("model", "准备下载： " + name);
         System.out.println("要下载的名称：" + name);
         String boardDetailURL = boardRepository.getBoardDetailURL(name);
@@ -96,9 +98,12 @@ public class DownloadBoardResourceInteractorImpl extends AbstractInteractor impl
             allresource = boardRepository.getAllResource(boardDetailURL);
             Log.i("allresource", allresource.toString());
 
+
+
             for (int i = 0; i < allresource.size(); i++) {
                 //TODO:其实这里不应该在view中去实现下载，因为view是处理ui变化的，而下载是内部线程，不是ui
                 //暂时没有好的解决方案
+
                 callback.onDownloadResource(allresource.get(i), name, listPosition);
             }
         }

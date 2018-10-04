@@ -7,7 +7,8 @@ import java.util.List;
 
 /**
  * Created by joyn on 2018/9/2 0002.
- * 用例:在下载管理器中展现已经下载好的板子，有别与主页，此界面是用来删除板子的
+ * 用例5:在下载管理器中展现已经下载好的板子，有别与主页，此界面是用来删除板子的
+ *  查看已下载的开发板
  * Interactor :Manage already downloaded boards
  */
 

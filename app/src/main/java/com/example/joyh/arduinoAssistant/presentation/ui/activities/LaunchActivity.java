@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.view.homePageActivity;
 import com.example.joyh.arduinoAssistant.R;
+import com.example.joyh.arduinoAssistant.presentation.ui.activities.homepage.activity.homePageActivity;
 
 /**
  * Created by joyn on 2018/8/19 0019.

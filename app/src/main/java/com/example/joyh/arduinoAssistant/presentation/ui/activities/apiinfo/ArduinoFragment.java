@@ -117,7 +117,7 @@ public class ArduinoFragment extends Fragment  {
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.cardview, parent, false);
+                    .inflate(R.layout.recyclerview_available_boards, parent, false);
 
             return new ViewHolder(view);
         }
@@ -161,7 +161,7 @@ public class ArduinoFragment extends Fragment  {
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("cardview", "onClick: card " + position + "has been pressed");
+                    Log.i("recyclerview_available_boards", "onClick: card " + position + "has been pressed");
                 }
             });
 

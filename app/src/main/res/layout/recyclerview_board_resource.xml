@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
-    android:layout_height="70dp">
+    android:layout_height="70dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackgroundBorderless">
 
     <ImageButton
         android:id="@+id/btn_share"
@@ -27,12 +29,12 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toRightOf="@id/imageView6"
+        app:layout_constraintLeft_toRightOf="@id/resourceIcon"
         app:layout_constraintRight_toLeftOf="@id/btn_share"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/resourceIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"

@@ -27,10 +27,9 @@ import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
 import com.example.joyh.arduinoAssistant.presentation.network.FileDownloader;
 import com.example.joyh.arduinoAssistant.presentation.network.FileDownloaderInterface;
-import com.example.joyh.arduinoAssistant.presentation.presenters.BoardDownloaderPresenter;
-import com.example.joyh.arduinoAssistant.presentation.presenters.impl.BoardDownLoaderPresenterImpl;
+import com.example.joyh.arduinoAssistant.presentation.presenters.hardwareInfo.BoardDownloaderPresenter;
+import com.example.joyh.arduinoAssistant.presentation.presenters.hardwareInfo.impl.BoardDownLoaderPresenterImpl;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.BoardDetailActivity;
-import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.activity.BoardManagerActivity;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.DownloadableRecyclerViewAdapter;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.DownloadableRecyclerViewAdapterInterface;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
@@ -49,8 +48,8 @@ import java.util.Map;
 public class DownloadableBoardFragment extends Fragment implements
         BoardDownloaderPresenter.View,
         DownloadableRecyclerViewAdapterInterface.Callback,
-        FileDownloaderInterface.Callback,
-        BoardRepository.Callback {
+        FileDownloaderInterface.Callback
+      {
 
     private BoardDownloaderPresenter mainPresenter;
     private MainThread mainThread;
@@ -109,10 +108,7 @@ public class DownloadableBoardFragment extends Fragment implements
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onError(String error) {
-        showError(error);
-    }
+
 
     @Override
     public void onShowDownloadableBoardList(List<BoardBeanModel> boards) {
@@ -238,6 +234,7 @@ public class DownloadableBoardFragment extends Fragment implements
     @Override
     public void onDownloadResource(String URL, String name, int position) {
 
+        BoardBeanModel toSaveBoardBean=new BoardBeanModel();
         String path;
         int downloadId;
         String defaultRootPath =
@@ -248,7 +245,12 @@ public class DownloadableBoardFragment extends Fragment implements
         }
         else if(URL.contains("pdf")){
             type="pdf";
+            toSaveBoardBean.setBoardName(name);
+            toSaveBoardBean.setSchematicPath( boardRepository.boardDownloadSavePath(name,type));
+            //保存这个boardbean对象
+            boardRepository.saveBoardBean(toSaveBoardBean);
         }
+
         FileDownloader fileDownloader = new FileDownloader
                 (
                         URL,
@@ -317,7 +319,7 @@ public class DownloadableBoardFragment extends Fragment implements
     private void initPresenter() {
         Executor executor = ThreadExecutor.getInstance();
         mainThread = MainThreadImpl.getInstance();
-        boardRepository = new BoardRepositoryImpl(getContext(), this);
+        boardRepository = BoardRepositoryImpl.getSingleInstance(getContext());
         //presenter实例化
         mainPresenter = new BoardDownLoaderPresenterImpl(executor, mainThread, boardRepository, this);
         mainPresenter.resume();

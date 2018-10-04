@@ -29,7 +29,7 @@
 
         <include
             android:id="@+id/framelayout"
-            layout="@layout/include_list_viewpager"
+            layout="@layout/activity_homepage"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>

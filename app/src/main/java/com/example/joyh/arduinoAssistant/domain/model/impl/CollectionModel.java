@@ -4,10 +4,20 @@ import java.io.Serializable;
 
 /**
  * Created by joyn on 2018/9/5 0005.
+ * 可收藏对象
  * 收藏项目的bean对象，保存了可收藏项目信息
  */
 
 public class CollectionModel implements Serializable {
+    
+    /**
+     * 收藏项目的类型
+     */ 
+  public final static int COLLECTION_TYPE_BOARD=0;
+  public final static int COLLECTION_TYPE_API=1;
+  public final static int COLLECTION_TYPE_VEDIO=2;
+  
+
     /**
      * 收藏对象的名字
      */
@@ -20,6 +30,16 @@ public class CollectionModel implements Serializable {
      * 是否已经被收藏，
      */
     private boolean state;
+    //这个对象用来保存这个可收藏对象所收藏的东西，比如可以保存boardbean对象
+    private Object collectionBean;
+
+    public Object getCollectionBean() {
+        return collectionBean;
+    }
+
+    public void setCollectionBean(Object collectionBean) {
+        this.collectionBean = collectionBean;
+    }
 
     public CollectionModel() {
     }
@@ -40,7 +60,7 @@ public class CollectionModel implements Serializable {
         this.type = type;
     }
 
-    public boolean isState() {
+    public boolean getState() {
         return state;
     }
 

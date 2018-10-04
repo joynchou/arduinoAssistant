@@ -6,6 +6,7 @@ import com.example.joyh.arduinoAssistant.domain.interactors.base.Interactor;
 
 /**
  * Created by joyn on 2018/8/24 0024.
+ * 用例6：下载新的开发板
  */
 
 public interface DownloadBoardResourceInteractor extends Interactor {

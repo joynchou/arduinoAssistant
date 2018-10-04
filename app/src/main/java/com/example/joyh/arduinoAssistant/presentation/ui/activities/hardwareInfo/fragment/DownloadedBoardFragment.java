@@ -21,8 +21,8 @@ import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
 import com.example.joyh.arduinoAssistant.domain.executor.impl.ThreadExecutor;
 import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.domain.repository.BoardRepository;
-import com.example.joyh.arduinoAssistant.presentation.presenters.BoardDeletePresenter;
-import com.example.joyh.arduinoAssistant.presentation.presenters.impl.BoardDeletePresenterImpl;
+import com.example.joyh.arduinoAssistant.presentation.presenters.hardwareInfo.BoardDeletePresenter;
+import com.example.joyh.arduinoAssistant.presentation.presenters.hardwareInfo.impl.BoardDeletePresenterImpl;
 import com.example.joyh.arduinoAssistant.presentation.ui.activities.hardwareInfo.adapter.DownloadedRecyclerViewAdapter;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 
@@ -35,7 +35,7 @@ import java.util.List;
  */
 
 public class DownloadedBoardFragment extends Fragment implements BoardDeletePresenter.View,
-        BoardRepository.Callback,
+
         DownloadedRecyclerViewAdapter.Callback {
 
     private TextView info;
@@ -125,10 +125,6 @@ public class DownloadedBoardFragment extends Fragment implements BoardDeletePres
         showInfo(message);
     }
 
-    @Override
-    public void onError(String error) {
-        showInfo(error);
-    }
 
     @Override
     public void onDeleteClicked(String name) {
@@ -138,7 +134,7 @@ public class DownloadedBoardFragment extends Fragment implements BoardDeletePres
     private void initPresenter() {
         Executor executor = ThreadExecutor.getInstance();
         mainThread = MainThreadImpl.getInstance();
-        boardRepository = new BoardRepositoryImpl(getContext(), this);
+        boardRepository =  BoardRepositoryImpl.getSingleInstance(getContext());
         //presenter实例化
         mainPresenter = new BoardDeletePresenterImpl(executor, mainThread, boardRepository, this);
         mainPresenter.resume();

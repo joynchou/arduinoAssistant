@@ -29,6 +29,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.joyh.arduinoAssistant.R;
 import com.example.joyh.arduinoAssistant.data.impl.BoardRepositoryImpl;
 import com.example.joyh.arduinoAssistant.domain.executor.MainThread;
+import com.example.joyh.arduinoAssistant.domain.model.impl.BoardBeanModel;
 import com.example.joyh.arduinoAssistant.threading.MainThreadImpl;
 
 import java.io.File;
@@ -127,51 +128,18 @@ public class DownloadableRecyclerViewAdapter extends
         }
     }
 
-    private void deleteItem(String name) {
-        int realPosition = this.boardName.indexOf(name);
-        if (realPosition != -1) {
-            Log.i("deleteItem", "element:" + realPosition + " boardName:" + name);
-            this.boardName.remove(realPosition);
-            this.boardImage.remove(realPosition);
-            this.downloadState.remove(realPosition);
-            this.downloadPresent.remove(realPosition);
 
-            Log.i("downloadPresentList", downloadPresent.toString());
-        } else {
-            Log.w("deleteItem", "no such element:" + boardName);
-        }
 
-    }
 
-    private void deletefile(String fileName) {
-        try {
-            // 找到文件所在的路径并删除该文件
-            File file = new File(boardRepository.boardDownloadDeletePath(fileName), fileName);
-            if (file.exists()) {
-                deleteFile(file);
-                Log.i("fileDelete", "deletefile: " + file.toString());
-            } else {
-                Log.i("fileDelete", "no such file: " + file.toString());
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void deleteFile(File dir) {
-        if (dir == null || !dir.exists() || !dir.isDirectory())
-            return;
-        for (File file : dir.listFiles()) {
-            if (file.isFile())
-                file.delete(); // 删除所有文件
-            else if (file.isDirectory())
-                deleteFile(file); // 递规的方式删除文件夹
-        }
-        dir.delete();// 删除目录本身
-    }
 
     private File saveImage(Bitmap bmp, String name) {
+        BoardBeanModel boardBeanModel=null;
+        boardBeanModel=boardRepository.getBoardBean(name);
+        if(boardBeanModel==null){
+            boardBeanModel=new BoardBeanModel();
+            boardBeanModel.setBoardName(name);
+            boardRepository.saveBoardBean(boardBeanModel);
+        }
         String path = Environment.getExternalStorageDirectory().getPath()
                 + File.separator
                 + "ArduinoResource"
@@ -194,6 +162,8 @@ public class DownloadableRecyclerViewAdapter extends
         } catch (IOException e) {
             e.printStackTrace();
         }
+        boardBeanModel.setPicPath(file.getPath());
+        boardRepository.saveBoardBean(boardBeanModel);
         return appDir;
     }
 
@@ -243,7 +213,7 @@ public class DownloadableRecyclerViewAdapter extends
         holder.download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("cardview", "onClick: download " + position + "has been pressed" + "state:" + downloadState.get(position));
+                Log.i("recyclerview_available_boards", "onClick: download " + position + "has been pressed" + "state:" + downloadState.get(position));
                 callback.onDownloadBoard(boardName.get(position), position, downloadState.get(position));
 
             }

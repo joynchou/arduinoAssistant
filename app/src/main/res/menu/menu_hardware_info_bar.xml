@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res-auto"
+<menu xmlns:android="http://schemas.android.com/apk/res-auto"
 
     xmlns:android2="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android2:id="@+id/menu_downloader"
         android2:checkable="false"
-        android2:icon="@drawable/ic_download"
+        android2:icon="@drawable/ic_download_white"
         android2:title="下载管理"
-        android:showAsAction="ifRoom" />
+        android:showAsAction="always" />
     <item
-        android2:id="@+id/menu_apiinfo_bar_setting"
-        android2:title="设置"
+        android2:id="@+id/menu_gridLayout"
+        android2:title="网格布局"
         android:showAsAction="never" />
     <item
         android2:id="@+id/menu_search"
         android2:icon="@drawable/ic_search_black_24dp"
         android2:title="搜索"
-        
-        android:showAsAction="ifRoom"
+
+        android:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 </menu>

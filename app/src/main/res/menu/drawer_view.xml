@@ -20,7 +20,8 @@
         <item
             android:id="@+id/nav_model_learning"
             android:icon="@drawable/ic_model_learn"
-            android:title="模块学习" />
+            android:title="模块学习"
+            android:visible="false" />
         <item
             android:id="@+id/nav_hardware_info"
             android:icon="@drawable/ic_event"
@@ -36,7 +37,8 @@
         <item
             android:id="@+id/menu_course"
             android:icon="@drawable/ic_notifications_black_24dp"
-            android:title="@string/menu_course" />
+            android:title="@string/menu_course"
+            android:visible="false" />
         <item
             android:id="@+id/about_software"
             android:icon="@drawable/ic_about_software"

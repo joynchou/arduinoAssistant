@@ -33,7 +33,7 @@
             android:layout_weight="1"
             app:layout_collapseMode="pin"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:logo="@drawable/ic_download"
+            app:logo="@drawable/ic_download_white"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:subtitle="选择需要下载的开发板"
             app:title="下载器">
